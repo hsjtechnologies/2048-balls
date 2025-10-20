@@ -13,7 +13,7 @@ namespace Assets.SimpleSignIn.X.Scripts
         public string CustomUriScheme;
 
         [Header("Options")]
-        public List<string> AccessScopes = new() { "tweet.read", "users.read" };
+        public List<string> AccessScopes = new List<string> { "tweet.read", "users.read" };
         [Tooltip("`XAuth.Cancel()` method should be called manually. `User cancelled` callback will not called automatically when the user returns to the app without performing auth.")]
         public bool ManualCancellation;
         [Tooltip("Use Safari API on iOS instead of a default web browser. This option is required for passing App Store review.")]
