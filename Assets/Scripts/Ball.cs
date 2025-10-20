@@ -12,27 +12,45 @@ public class Ball : MonoBehaviour
     public float rightLimit;
     private Rigidbody rb;
 
-
     private void Start()
     {
-        GM = GameObject.Find("GameManager").GetComponent<GameManager>();
+        // Add null check for GameManager
+        GameObject gmObject = GameObject.Find("GameManager");
+        if (gmObject != null)
+        {
+            GM = gmObject.GetComponent<GameManager>();
+        }
+        else
+        {
+            Debug.LogError("GameManager not found in scene!");
+            return;
+        }
+
         rb = GetComponent<Rigidbody>();
-        try{Destroy(GetComponent<LineRenderer>());}catch (System.Exception){}
+        if (rb == null)
+        {
+            Debug.LogError("Rigidbody not found on " + gameObject.name);
+        }
+
+        try { Destroy(GetComponent<LineRenderer>()); }
+        catch (System.Exception) { }
     }
+
     private void OnTriggerStay(Collider other)
     {
+        if (GM == null) return; // Safety check
+
         if (other.name == gameObject.name)
         {
-            //Debug.Log("Found Matching ball!");
             if (isLocked == false)
             {
-                if (other.gameObject.GetComponent<Ball>().isLocked == true)
+                Ball otherBall = other.gameObject.GetComponent<Ball>();
+                if (otherBall == null || otherBall.isLocked == true)
                 {
-                    return; //Abort, other ball already locked!
+                    return; // Abort, other ball already locked or no Ball component!
                 }
                 isLocked = true;
-                other.gameObject.GetComponent<Ball>().isLocked = true;
-                //Debug.Log("Locked");
+                otherBall.isLocked = true;
                 targetObj = other.gameObject;
             }
             else
@@ -40,14 +58,16 @@ public class Ball : MonoBehaviour
                 return;
             }
         }
-        if (isLocked == false && rb.velocity.magnitude <= 0.1f && other.gameObject.name == "GameOverBarrier")
+
+        if (isLocked == false && rb != null && rb.velocity.magnitude <= 0.1f && other.gameObject.name == "GameOverBarrier")
         {
             GM.GameOver();
         }
     }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (hasInstantiated == false && other.tag == "Ball" || other.tag == "Border" && gameObject.transform.parent == null)
+        if (hasInstantiated == false && (other.CompareTag("Ball") || other.CompareTag("Border")) && gameObject.transform.parent == null)
         {
             hasInstantiated = true;
         }
@@ -55,12 +75,13 @@ public class Ball : MonoBehaviour
 
     private void Update()
     {
-        if (isLocked == true && targetObj.transform != null)
+        if (isLocked == true && targetObj != null && targetObj.transform != null)
         {
-            float step = 5f * Time.deltaTime; // calculate distance to move
+            float step = 5f * Time.deltaTime;
             transform.position = Vector3.MoveTowards(transform.position, targetObj.transform.position, step);
         }
-        if (isLocked == true && Vector3.Distance(transform.position, targetObj.transform.position) <= 0.1f)
+
+        if (isLocked == true && targetObj != null && Vector3.Distance(transform.position, targetObj.transform.position) <= 0.1f)
         {
             instantiateNew();
         }
@@ -68,40 +89,55 @@ public class Ball : MonoBehaviour
 
     private void instantiateNew()
     {
+        if (GM == null) return; // Safety check
+
         Destroy(targetObj);
         GameObject ballToInstantiate = null;
+
+        // Find the current ball index
+        int currentIndex = -1;
         for (int i = 0; i < GM.balls.Length; i++)
         {
             if (this.name == GM.balls[i].name)
             {
-                if (i++ > GM.balls.Length)
-                {
-                    Debug.Log("This is the max value ball can have");
-                    Destroy(this.gameObject);
-                }
-                else
-                {
-                    ballToInstantiate = GM.balls[i++];
-                }
+                currentIndex = i;
+                break;
             }
         }
+
+        // Get the next ball (if it exists)
+        if (currentIndex != -1 && currentIndex + 1 < GM.balls.Length)
+        {
+            ballToInstantiate = GM.balls[currentIndex + 1];
+        }
+        else
+        {
+            Debug.Log("This is the max value ball can have");
+            Destroy(this.gameObject);
+            return;
+        }
+
         if (ballToInstantiate != null)
         {
-            GameObject ball = Instantiate(ballToInstantiate, this.transform.position, this.transform.rotation) as GameObject;
-            /*if(GM.shrinkBallSizes > 1)
-                ball.transform.localScale /= GM.shrinkBallSizes;
-            else if (GM.shrinkBallSizes < 0)
-                ball.transform.localScale *= -GM.shrinkBallSizes;*/
+            GameObject ball = Instantiate(ballToInstantiate, this.transform.position, this.transform.rotation);
             ball.name = ballToInstantiate.name;
-            ball.GetComponent<TrailRenderer>().startWidth = ball.transform.localScale.x;
-            ball.GetComponent<TrailRenderer>().endWidth = (ball.transform.localScale.x / 2f);
+
+            TrailRenderer trail = ball.GetComponent<TrailRenderer>();
+            if (trail != null)
+            {
+                trail.startWidth = ball.transform.localScale.x;
+                trail.endWidth = ball.transform.localScale.x / 2f;
+            }
+
+            Ball ballScript = ball.GetComponent<Ball>();
+            if (ballScript != null)
+            {
+                ballScript.enabled = true;
+            }
+
             GM.Merging(transform.name);
-            ball.GetComponent<Ball>().enabled = true;
-            //Debug.Log("Instantaiated");
         }
-        //merge
+
         Destroy(this.gameObject);
     }
-
-    
 }

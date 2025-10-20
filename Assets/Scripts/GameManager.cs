@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 public class GameManager : MonoBehaviour
 {
+    public static bool IsLoggedIn = false; //tracks login status
     public GameObject[] balls;
     private bool gameOver = false;
     [SerializeField]
@@ -37,9 +38,14 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        //long.TryParse(balls[balls.Length - 1].gameObject.name, out toReach);
-        //toReach *= 2;
-        //shrinkSizes();
+        if (!IsLoggedIn)
+        Time.timeScale = 0f; // Pause all physics & updates
+    else
+        Time.timeScale = 1f;
+
+    //long.TryParse(balls[balls.Length - 1].gameObject.name, out toReach);
+    //toReach *= 2;
+    //shrinkSizes();
 
         if (PlayerPrefs.GetInt("level") > 0)
         {

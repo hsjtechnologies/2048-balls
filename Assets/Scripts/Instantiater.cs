@@ -18,8 +18,11 @@ public class Instantiater : MonoBehaviour
 
     private void Start()
     {
+    // Only start spawning once player is logged in
+    if (GameManager.IsLoggedIn)
         pickBall();
     }
+
 
     public void Drop()
     {
@@ -27,18 +30,24 @@ public class Instantiater : MonoBehaviour
         inCoolDown = coolDown;
     }
 
+    
     private void Update()
     {
-        if (holdsBall == false)
+    // Do nothing if not logged in yet
+    if (!GameManager.IsLoggedIn)
+        return;
+
+    if (holdsBall == false)
+    {
+        if (inCoolDown > 0)
+            inCoolDown -= Time.deltaTime;
+        if (inCoolDown <= 0)
         {
-            if (inCoolDown > 0)
-                inCoolDown -= Time.deltaTime;
-            if (inCoolDown <= 0)
-            {
-                pickBall();
-            }
+            pickBall();
         }
     }
+}
+
 
     private void pickBall()
     {
