@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: XAuthSettings
   m_EditorClassIdentifier: 
   Id: Default
-  ClientId: VzZjeDZiZmx3N29JWVNRSXl0SHE6MTpjaQ
-  ClientSecret: 7GI1D98rL6EpIczCQrNqvuZsdHHw4qs1MaQDv37NcWS5VoQ0mY
-  CustomUriScheme: simple.oauth
+  ClientId: YOUR_TWITTER_CLIENT_ID_HERE
+  ClientSecret: YOUR_TWITTER_CLIENT_SECRET_HERE
+  CustomUriScheme: ball2048.oauth
   AccessScopes:
   - tweet.read
   - users.read

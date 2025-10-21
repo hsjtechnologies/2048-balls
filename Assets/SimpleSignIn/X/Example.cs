@@ -12,7 +12,7 @@ namespace Assets.SimpleSignIn.X
         
         public void Start()
         {
-            Application.logMessageReceived += (condition, _, _) => Log.text += condition + '\n';
+            Application.logMessageReceived += HandleLog;
             XAuth = new XAuth();
             XAuth.TryResume(OnSignIn, OnGetTokenResponse);
         }
@@ -41,6 +41,11 @@ namespace Assets.SimpleSignIn.X
         private void OnGetTokenResponse(bool success, string error, TokenResponse tokenResponse)
         {
             Output.text = success ? $"Access token: {tokenResponse.AccessToken}" : error;
+        }
+
+        private void HandleLog(string condition, string stackTrace, LogType type)
+        {
+            Log.text += condition + '\n';
         }
 
         public void Navigate(string url)

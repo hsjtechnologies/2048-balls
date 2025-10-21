@@ -324,7 +324,7 @@ namespace Assets.SimpleSignIn.X.Scripts
                 else
                 {
                     Log("Refreshing expired access token...");
-                    RefreshAccessToken((success, _, _) =>
+                    RefreshAccessToken((success, error, tokenResponse) =>
                     {
                         if (success)
                         {
@@ -341,7 +341,7 @@ namespace Assets.SimpleSignIn.X.Scripts
             else
             {
                 Log("Using saved access token...");
-                RequestUserInfo(SavedAuth.TokenResponse.AccessToken, (success, _, userInfo) =>
+                RequestUserInfo(SavedAuth.TokenResponse.AccessToken, (success, error, userInfo) =>
                 {
                     if (success)
                     {
@@ -422,33 +422,33 @@ namespace Assets.SimpleSignIn.X.Scripts
             AddBasicAuthHeader(request);
             Log($"Exchanging code for access token: {request.url}");
 
-            request.SendWebRequest().completed += _ =>
+            request.SendWebRequest().completed += operation =>
             {
-                if (request.error == null)
-                {
-                    Log($"TokenExchangeResponse={request.downloadHandler.text}");
-
-                    TokenResponse = TokenResponse.Parse(request.downloadHandler.text);
-                    SavedAuth = new SavedAuth(_settings.ClientId, TokenResponse);
-                    SavedAuth.Save();
-
-                    if (_callbackT != null)
-                    {
-                        _callbackT(true, null, TokenResponse);
-                    }
-
-                    if (_callbackU != null)
-                    {
-                        RequestUserInfo(TokenResponse.AccessToken, _callbackU);
-                    }
-                }
-                else
-                {
-                    _callbackU?.Invoke(false, request.GetError(), null);
-                    _callbackT?.Invoke(false, request.GetError(), null);
-                }
-
-                request.Dispose();
+            if (request.error == null)
+            {
+            Log($"TokenExchangeResponse={request.downloadHandler.text}");
+            
+            TokenResponse = TokenResponse.Parse(request.downloadHandler.text);
+            SavedAuth = new SavedAuth(_settings.ClientId, TokenResponse);
+            SavedAuth.Save();
+            
+            if (_callbackT != null)
+            {
+            _callbackT(true, null, TokenResponse);
+            }
+            
+            if (_callbackU != null)
+            {
+            RequestUserInfo(TokenResponse.AccessToken, _callbackU);
+            }
+            }
+            else
+            {
+            _callbackU?.Invoke(false, request.GetError(), null);
+            _callbackT?.Invoke(false, request.GetError(), null);
+            }
+            
+            request.Dispose();
             };
 
             if (PlayerPrefs.HasKey(TempKey))
@@ -468,7 +468,7 @@ namespace Assets.SimpleSignIn.X.Scripts
             Log($"Requesting user info: {request.url}");
 
             request.SetRequestHeader("Authorization", $"Bearer {accessToken}");
-            request.SendWebRequest().completed += _ =>
+            request.SendWebRequest().completed += operation =>
             {
                 if (request.error == null)
                 {
@@ -556,7 +556,7 @@ namespace Assets.SimpleSignIn.X.Scripts
             AddBasicAuthHeader(request);
             Log($"Revoking access token: {request.url}");
 
-            request.SendWebRequest().completed += _ =>
+            request.SendWebRequest().completed += operation =>
             {
                 Log(request.result == UnityWebRequest.Result.Success ? "Access token revoked!" : request.GetError());
                 request.Dispose();

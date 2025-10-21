@@ -29,7 +29,7 @@ namespace Assets.SimpleSignIn.X.Scripts
                 error = $"{error}: {request.downloadHandler.text}";
             }
 
-            if (!error.EndsWith('.')) error += '.';
+            if (!error.EndsWith(".")) error += ".";
 
             return error;
         }

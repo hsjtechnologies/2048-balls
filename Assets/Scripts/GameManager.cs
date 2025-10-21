@@ -38,10 +38,21 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        // Subscribe to login events
+        TwitterOAuth.OnLoginCompleted += OnUserLoggedIn;
+        TwitterOAuth.OnLogoutCompleted += OnUserLoggedOut;
+        
+        // Check login status
         if (!IsLoggedIn)
-        Time.timeScale = 0f; // Pause all physics & updates
-    else
-        Time.timeScale = 1f;
+        {
+            Time.timeScale = 0f; // Pause all physics & updates
+            Debug.Log("Game paused - waiting for user login");
+        }
+        else
+        {
+            Time.timeScale = 1f;
+            Debug.Log("Game started - user is logged in");
+        }
 
     //long.TryParse(balls[balls.Length - 1].gameObject.name, out toReach);
     //toReach *= 2;
@@ -111,11 +122,32 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         Debug.Log("GAME OVER");
+        
+        // Log final score to database
+        LogFinalScore();
+        
         Destroy(GameObject.Find("Instantiater"));
         PlayerPrefs.DeleteAll();
         gameOver = true;
         StartCoroutine(darkenBalls());
         //Open game over screen
+    }
+
+    private void LogFinalScore()
+    {
+        // Find TwitterOAuth component to log score
+        TwitterOAuth twitterAuth = FindObjectOfType<TwitterOAuth>();
+        if (twitterAuth != null && twitterAuth.IsLoggedIn)
+        {
+            // Calculate final score (you can adjust this based on your scoring system)
+            int finalScore = Mathf.RoundToInt(score + (level * 100));
+            twitterAuth.LogScoreToDatabase(finalScore);
+            Debug.Log($"Final score logged: {finalScore}");
+        }
+        else
+        {
+            Debug.LogWarning("Cannot log score - user not logged in or TwitterOAuth not found");
+        }
     }
     IEnumerator darkenBalls() {
       //Declare a yield instruction.
@@ -132,7 +164,39 @@ public class GameManager : MonoBehaviour
             }
             yield return wait; //Pause the loop for 3 seconds.
         }
-   }
+    }
+
+    // Event handlers for login system
+    private void OnUserLoggedIn(string twitterUsername, string walletAddress)
+    {
+        Debug.Log($"User logged in: @{twitterUsername} with wallet: {walletAddress}");
+        
+        // Resume game
+        Time.timeScale = 1f;
+        IsLoggedIn = true;
+        
+        // You can add additional game initialization here
+        // For example, load user-specific data, achievements, etc.
+    }
+
+    private void OnUserLoggedOut()
+    {
+        Debug.Log("User logged out");
+        
+        // Pause game
+        Time.timeScale = 0f;
+        IsLoggedIn = false;
+        
+        // You can add cleanup logic here
+        // For example, save current progress, reset game state, etc.
+    }
+
+    private void OnDestroy()
+    {
+        // Unsubscribe from events to prevent memory leaks
+        TwitterOAuth.OnLoginCompleted -= OnUserLoggedIn;
+        TwitterOAuth.OnLogoutCompleted -= OnUserLoggedOut;
+    }
     
 }
 
