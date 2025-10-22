@@ -21,6 +21,8 @@ public class TwitterOAuth : MonoBehaviour
     [Header("Backend Configuration")]
     public string backendURL = "https://ball-game-hlvu.onrender.com";
     public bool debugMode = true;
+    [Tooltip("If true, creates a minimal UI at runtime when references are missing.")]
+    public bool autoCreateUIIfMissing = false;
 
     [Header("Google Sheets Integration")]
     public string googleSheetsWebhookURL = ""; // Set this to your Google Apps Script webhook
@@ -67,9 +69,154 @@ public class TwitterOAuth : MonoBehaviour
             }
         }
 
+        // Ensure required UI exists
+        if (autoCreateUIIfMissing)
+        {
+            EnsureRuntimeUI();
+        }
+
         // Initialize panel states
         ShowLoginPanel();
         UpdateStatusText("Ready to login with Twitter");
+    }
+
+    private void EnsureRuntimeUI()
+    {
+        // If wallet UI is not wired, create a minimal one so the user can proceed
+        bool needsWalletUi = walletPanel == null || walletAddressInput == null || confirmWalletButton == null;
+        bool needsLoginUi = loginPanel == null || loginButton == null || statusText == null;
+
+        if (!needsWalletUi && !needsLoginUi && gamePanel != null && logoutButton != null) return;
+
+        // Find or create canvas
+        Canvas canvas = FindObjectOfType<Canvas>();
+        if (canvas == null)
+        {
+            var canvasGO = new GameObject("Canvas");
+            canvas = canvasGO.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvasGO.AddComponent<CanvasScaler>();
+            canvasGO.AddComponent<GraphicRaycaster>();
+        }
+
+        // Container
+        GameObject container = GameObject.Find("TwitterOAuthContainer");
+        if (container == null)
+        {
+            container = new GameObject("TwitterOAuthContainer");
+            container.transform.SetParent(canvas.transform, false);
+            var rt = container.AddComponent<RectTransform>();
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = Vector2.one;
+            rt.sizeDelta = Vector2.zero;
+        }
+
+        // Minimal Login Panel
+        if (needsLoginUi)
+        {
+            loginPanel = new GameObject("LoginPanel");
+            loginPanel.transform.SetParent(container.transform, false);
+            var prt = loginPanel.AddComponent<RectTransform>();
+            prt.anchorMin = Vector2.zero; prt.anchorMax = Vector2.one; prt.sizeDelta = Vector2.zero;
+            var bg = loginPanel.AddComponent<Image>();
+            bg.color = new Color(0, 0, 0, 0.5f);
+
+            // Status Text
+            var statusGO = new GameObject("StatusText");
+            statusGO.transform.SetParent(loginPanel.transform, false);
+            var srt = statusGO.AddComponent<RectTransform>();
+            srt.anchorMin = new Vector2(0.5f, 0.6f); srt.anchorMax = srt.anchorMin; srt.sizeDelta = new Vector2(600, 40);
+            statusText = statusGO.AddComponent<TextMeshProUGUI>();
+            statusText.alignment = TextAlignmentOptions.Center;
+            statusText.fontSize = 20;
+            statusText.color = Color.yellow;
+
+            // Login Button
+            var btnGO = new GameObject("LoginButton");
+            btnGO.transform.SetParent(loginPanel.transform, false);
+            var brt = btnGO.AddComponent<RectTransform>();
+            brt.anchorMin = new Vector2(0.5f, 0.4f); brt.anchorMax = brt.anchorMin; brt.sizeDelta = new Vector2(220, 60);
+            var img = btnGO.AddComponent<Image>(); img.color = new Color(0.2f, 0.6f, 1f, 1f);
+            loginButton = btnGO.AddComponent<Button>(); loginButton.targetGraphic = img;
+            var txtGO = new GameObject("Text");
+            txtGO.transform.SetParent(btnGO.transform, false);
+            var trt = txtGO.AddComponent<RectTransform>(); trt.anchorMin = Vector2.zero; trt.anchorMax = Vector2.one; trt.sizeDelta = Vector2.zero;
+            var t = txtGO.AddComponent<TextMeshProUGUI>(); t.text = "Login with Twitter"; t.alignment = TextAlignmentOptions.Center; t.fontSize = 18; t.color = Color.white;
+            loginButton.onClick.AddListener(OnLoginButtonClick);
+        }
+
+        // Minimal Wallet Panel
+        if (needsWalletUi)
+        {
+            walletPanel = new GameObject("WalletPanel");
+            walletPanel.transform.SetParent(container.transform, false);
+            var prt = walletPanel.AddComponent<RectTransform>();
+            prt.anchorMin = Vector2.zero; prt.anchorMax = Vector2.one; prt.sizeDelta = Vector2.zero;
+            var bg = walletPanel.AddComponent<Image>();
+            bg.color = new Color(0, 0, 0, 0.5f);
+            walletPanel.SetActive(false);
+
+            // Username label
+            var userGO = new GameObject("UsernameText");
+            userGO.transform.SetParent(walletPanel.transform, false);
+            var urt = userGO.AddComponent<RectTransform>();
+            urt.anchorMin = new Vector2(0.5f, 0.7f); urt.anchorMax = urt.anchorMin; urt.sizeDelta = new Vector2(600, 40);
+            usernameText = userGO.AddComponent<TextMeshProUGUI>();
+            usernameText.alignment = TextAlignmentOptions.Center; usernameText.fontSize = 22; usernameText.color = Color.white;
+
+            // Input field base
+            var inputGO = new GameObject("WalletInputField");
+            inputGO.transform.SetParent(walletPanel.transform, false);
+            var irt = inputGO.AddComponent<RectTransform>();
+            irt.anchorMin = new Vector2(0.5f, 0.5f); irt.anchorMax = irt.anchorMin; irt.sizeDelta = new Vector2(520, 56);
+            var inputBg = inputGO.AddComponent<Image>(); inputBg.color = Color.white;
+            walletAddressInput = inputGO.AddComponent<TMP_InputField>();
+            
+            // Text component
+            var textGO = new GameObject("Text");
+            textGO.transform.SetParent(inputGO.transform, false);
+            var txrt = textGO.AddComponent<RectTransform>(); txrt.anchorMin = Vector2.zero; txrt.anchorMax = Vector2.one; txrt.sizeDelta = Vector2.zero;
+            var text = textGO.AddComponent<TextMeshProUGUI>(); text.color = Color.black; text.fontSize = 18; text.alignment = TextAlignmentOptions.Left;
+            walletAddressInput.textComponent = text;
+            
+            // Placeholder
+            var phGO = new GameObject("Placeholder");
+            phGO.transform.SetParent(inputGO.transform, false);
+            var phrt = phGO.AddComponent<RectTransform>(); phrt.anchorMin = Vector2.zero; phrt.anchorMax = Vector2.one; phrt.sizeDelta = Vector2.zero;
+            var placeholder = phGO.AddComponent<TextMeshProUGUI>(); placeholder.text = "Enter your Sui wallet address (0x...)"; placeholder.color = Color.gray; placeholder.fontSize = 18; placeholder.alignment = TextAlignmentOptions.Left;
+            walletAddressInput.placeholder = placeholder;
+            walletAddressInput.onValueChanged.AddListener(OnWalletAddressChanged);
+
+            // Confirm button
+            var cbtnGO = new GameObject("ConfirmButton");
+            cbtnGO.transform.SetParent(walletPanel.transform, false);
+            var crt = cbtnGO.AddComponent<RectTransform>();
+            crt.anchorMin = new Vector2(0.5f, 0.32f); crt.anchorMax = crt.anchorMin; crt.sizeDelta = new Vector2(180, 52);
+            var cimg = cbtnGO.AddComponent<Image>(); cimg.color = new Color(0.2f, 0.8f, 0.2f, 1f);
+            confirmWalletButton = cbtnGO.AddComponent<Button>(); confirmWalletButton.targetGraphic = cimg; confirmWalletButton.onClick.AddListener(OnConfirmWalletClick);
+            var ctextGO = new GameObject("Text"); ctextGO.transform.SetParent(cbtnGO.transform, false);
+            var ctrt = ctextGO.AddComponent<RectTransform>(); ctrt.anchorMin = Vector2.zero; ctrt.anchorMax = Vector2.one; ctrt.sizeDelta = Vector2.zero;
+            var ctext = ctextGO.AddComponent<TextMeshProUGUI>(); ctext.text = "Confirm Wallet"; ctext.fontSize = 18; ctext.color = Color.white; ctext.alignment = TextAlignmentOptions.Center;
+        }
+
+        // Minimal Game Panel
+        if (gamePanel == null || logoutButton == null)
+        {
+            gamePanel = new GameObject("GamePanel");
+            gamePanel.transform.SetParent(container.transform, false);
+            var grt = gamePanel.AddComponent<RectTransform>();
+            grt.anchorMin = Vector2.zero; grt.anchorMax = Vector2.one; grt.sizeDelta = Vector2.zero;
+            gamePanel.SetActive(false);
+
+            var lbtnGO = new GameObject("LogoutButton");
+            lbtnGO.transform.SetParent(gamePanel.transform, false);
+            var lrt = lbtnGO.AddComponent<RectTransform>(); lrt.anchorMin = new Vector2(1f, 1f); lrt.anchorMax = lrt.anchorMin; lrt.sizeDelta = new Vector2(100, 40); lrt.anchoredPosition = new Vector2(-60, -30);
+            var limg = lbtnGO.AddComponent<Image>(); limg.color = new Color(0.8f, 0.2f, 0.2f, 1f);
+            logoutButton = lbtnGO.AddComponent<Button>(); logoutButton.targetGraphic = limg; logoutButton.onClick.AddListener(OnLogoutClick);
+            var ltxtGO = new GameObject("Text"); ltxtGO.transform.SetParent(lbtnGO.transform, false);
+            var ltrt = ltxtGO.AddComponent<RectTransform>(); ltrt.anchorMin = Vector2.zero; ltrt.anchorMax = Vector2.one; ltrt.sizeDelta = Vector2.zero;
+            var ltxt = ltxtGO.AddComponent<TextMeshProUGUI>(); ltxt.text = "Logout"; ltxt.fontSize = 14; ltxt.color = Color.white; ltxt.alignment = TextAlignmentOptions.Center;
+        }
     }
 
     private void CheckExistingLogin()
@@ -117,6 +264,7 @@ public class TwitterOAuth : MonoBehaviour
         {
             // Check if there's a URL with OAuth parameters
             string url = Application.absoluteURL;
+            LogDebug($"Current URL: {url}");
             
             if (url.Contains("twitter=success"))
             {
@@ -131,6 +279,22 @@ public class TwitterOAuth : MonoBehaviour
                 yield break;
             }
             
+            // Also check for URL parameters in WebGL (alternative method)
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            if (CheckWebGLURLParameters())
+            {
+                LogDebug("OAuth callback detected via WebGL method!");
+                UpdateStatusText("Login successful! Processing...");
+                
+                // Extract from current URL
+                ExtractOAuthData(Application.absoluteURL);
+                
+                // Show wallet input panel
+                ShowWalletPanel();
+                yield break;
+            }
+            #endif
+            
             elapsedTime += Time.deltaTime;
             yield return new WaitForSeconds(1f);
         }
@@ -138,6 +302,25 @@ public class TwitterOAuth : MonoBehaviour
         LogError("OAuth callback timeout - user may have cancelled login");
         UpdateStatusText("Login timeout. Please try again.");
     }
+
+    #if UNITY_WEBGL && !UNITY_EDITOR
+    [System.Runtime.InteropServices.DllImport("__Internal")]
+    private static extern string GetURLParameters();
+    
+    private bool CheckWebGLURLParameters()
+    {
+        try
+        {
+            string paramsStr = GetURLParameters();
+            LogDebug($"WebGL URL parameters: {paramsStr}");
+            return paramsStr.Contains("twitter=success");
+        }
+        catch
+        {
+            return false;
+        }
+    }
+#endif
 
     private void ExtractOAuthData(string url)
     {
@@ -172,7 +355,30 @@ public class TwitterOAuth : MonoBehaviour
             usernameText.text = $"Welcome, @{twitterUsername}!";
     }
 
-    private void OnWalletAddressChanged(string address)
+    // Public helper to force show wallet panel (e.g., if callback is blocked)
+    public void ForceShowWalletPanel()
+    {
+        ShowWalletPanel();
+        UpdateStatusText("Please enter your Sui wallet address to continue");
+    }
+
+    // Manual method to trigger login success (for testing or if callback fails)
+    public void ManualLoginSuccess(string username, string token)
+    {
+        LogDebug($"Manual login success triggered: {username}");
+        twitterUsername = username;
+        accessToken = token;
+        
+        // Update UI
+        if (usernameText != null)
+            usernameText.text = $"Welcome, @{username}!";
+        
+        // Show wallet input panel
+        ShowWalletPanel();
+        UpdateStatusText("Login successful! Please enter your Sui wallet address.");
+    }
+
+    public void OnWalletAddressChanged(string address)
     {
         suiWalletAddress = address.Trim();
         ValidateWalletAddress();
@@ -204,11 +410,21 @@ public class TwitterOAuth : MonoBehaviour
         return address.StartsWith("0x") && address.Length == 66;
     }
 
-    private void OnConfirmWalletClick()
+    public void OnConfirmWalletClick()
     {
+        LogDebug($"OnConfirmWalletClick called. Current wallet address: '{suiWalletAddress}'");
+        
+        // Get the current value from the input field if it's not set
+        if (string.IsNullOrEmpty(suiWalletAddress) && walletAddressInput != null)
+        {
+            suiWalletAddress = walletAddressInput.text.Trim();
+            LogDebug($"Retrieved wallet address from input field: '{suiWalletAddress}'");
+        }
+        
         if (string.IsNullOrEmpty(suiWalletAddress) || !IsValidSuiAddress(suiWalletAddress))
         {
-            UpdateStatusText("Please enter a valid Sui wallet address");
+            LogError($"Invalid wallet address: '{suiWalletAddress}'");
+            UpdateStatusText("Please enter a valid Sui wallet address (0x + 66 characters)");
             return;
         }
 
@@ -226,18 +442,26 @@ public class TwitterOAuth : MonoBehaviour
     private void CompleteLogin()
     {
         LogDebug("Login process completed successfully");
+        LogDebug($"Setting GameManager.IsLoggedIn = true");
+        LogDebug($"Setting Time.timeScale = 1f");
         
         // Set game state
         GameManager.IsLoggedIn = true;
         Time.timeScale = 1f;
         isLoggedIn = true;
         
+        LogDebug($"GameManager.IsLoggedIn is now: {GameManager.IsLoggedIn}");
+        LogDebug($"Time.timeScale is now: {Time.timeScale}");
+        
         // Update UI
         UpdateStatusText($"Welcome! Game ready. Wallet: {suiWalletAddress.Substring(0, 10)}...");
         ShowGamePanel();
         
+        LogDebug("Calling OnLoginCompleted event");
         // Notify other systems
         OnLoginCompleted?.Invoke(twitterUsername, suiWalletAddress);
+        
+        LogDebug("CompleteLogin finished successfully");
     }
 
     private void OnLogoutClick()
@@ -285,9 +509,32 @@ public class TwitterOAuth : MonoBehaviour
 
     private void ShowGamePanel()
     {
-        if (loginPanel != null) loginPanel.SetActive(false);
-        if (walletPanel != null) walletPanel.SetActive(false);
-        if (gamePanel != null) gamePanel.SetActive(true);
+        LogDebug("ShowGamePanel called");
+        LogDebug($"loginPanel: {loginPanel?.name ?? "null"}");
+        LogDebug($"walletPanel: {walletPanel?.name ?? "null"}");
+        LogDebug($"gamePanel: {gamePanel?.name ?? "null"}");
+        
+        if (loginPanel != null) 
+        {
+            loginPanel.SetActive(false);
+            LogDebug("Login panel deactivated");
+        }
+        
+        if (walletPanel != null) 
+        {
+            walletPanel.SetActive(false);
+            LogDebug("Wallet panel deactivated");
+        }
+        
+        if (gamePanel != null) 
+        {
+            gamePanel.SetActive(true);
+            LogDebug("Game panel activated");
+        }
+        else
+        {
+            LogDebug("No game panel assigned - wallet panel will remain visible");
+        }
     }
 
     private void UpdateStatusText(string message)
