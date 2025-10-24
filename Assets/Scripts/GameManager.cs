@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        // Subscribe to login events
+        // Subscribe to login events from TwitterOAuth
         TwitterOAuth.OnLoginCompleted += OnUserLoggedIn;
         TwitterOAuth.OnLogoutCompleted += OnUserLoggedOut;
         
@@ -135,18 +135,18 @@ public class GameManager : MonoBehaviour
 
     private void LogFinalScore()
     {
-        // Find TwitterOAuth component to log score
-        TwitterOAuth twitterAuth = FindObjectOfType<TwitterOAuth>();
-        if (twitterAuth != null && twitterAuth.IsLoggedIn)
+        // Find SimpleSignInManager component to log score
+        SimpleSignInManager signInManager = FindObjectOfType<SimpleSignInManager>();
+        if (signInManager != null && signInManager.IsLoggedIn)
         {
             // Calculate final score (you can adjust this based on your scoring system)
             int finalScore = Mathf.RoundToInt(score + (level * 100));
-            twitterAuth.LogScoreToDatabase(finalScore);
+            signInManager.LogScoreToDatabase(finalScore, level);
             Debug.Log($"Final score logged: {finalScore}");
         }
         else
         {
-            Debug.LogWarning("Cannot log score - user not logged in or TwitterOAuth not found");
+            Debug.LogWarning("Cannot log score - user not logged in or SimpleSignInManager not found");
         }
     }
     IEnumerator darkenBalls() {

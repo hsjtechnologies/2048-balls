@@ -15,6 +15,13 @@ mergeInto(LibraryManager.library, {
       // send back username or token
       SendMessage('GameManager', 'OnTwitterLoginSuccess', 'user123');
     }, 2000);
+  },
+  
+  GetURLParameters: function() {
+    // Get URL parameters from browser
+    var urlParams = window.location.search;
+    var result = UTF8ToString(AllocateStringFromUTF8(urlParams));
+    return result;
   }
 });
 
