@@ -4,16 +4,20 @@ using UnityEngine.UI;
 public class WalletConfirmButton : MonoBehaviour
 {
     private Button button;
-    private TwitterOAuth twitterAuth;
+    private TwitterOAuth twitterOAuth;
     
     void Start()
     {
         button = GetComponent<Button>();
-        twitterAuth = FindObjectOfType<TwitterOAuth>();
+        twitterOAuth = FindObjectOfType<TwitterOAuth>();
         
-        if (button != null && twitterAuth != null)
+        if (button != null && twitterOAuth != null)
         {
-            button.onClick.AddListener(() => twitterAuth.OnConfirmWalletClick());
+            button.onClick.AddListener(() => twitterOAuth.OnConfirmWalletClick());
+        }
+        else
+        {
+            Debug.LogError("WalletConfirmButton: Button or TwitterOAuth not found!");
         }
     }
 }

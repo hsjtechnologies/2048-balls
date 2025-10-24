@@ -20,6 +20,7 @@ public class TwitterOAuth : MonoBehaviour
 
     [Header("Backend Configuration")]
     public string backendURL = "https://ball-game-hlvu.onrender.com";
+    public string gameURL = "https://ball-game-lilac.vercel.app"; // The actual Unity WebGL game URL
     public bool debugMode = true;
     [Tooltip("If true, creates a minimal UI at runtime when references are missing.")]
     public bool autoCreateUIIfMissing = false;
@@ -238,18 +239,57 @@ public class TwitterOAuth : MonoBehaviour
         LogDebug("Login button clicked");
         UpdateStatusText("Opening Twitter login...");
 
-        // Open Twitter OAuth flow
-        string authUrl = $"{backendURL}/auth/twitter";
-        LogDebug($"Opening: {authUrl}");
+        // TEMPORARY: Check if backend is working by testing the URL
+        StartCoroutine(TestBackendAndLogin());
+    }
+
+    private IEnumerator TestBackendAndLogin()
+    {
+        // Test if backend is working
+        string testUrl = $"{backendURL}/";
+        LogDebug($"Testing backend at: {testUrl}");
+        
+        using (var request = new UnityEngine.Networking.UnityWebRequest(testUrl, "GET"))
+        {
+            request.downloadHandler = new UnityEngine.Networking.DownloadHandlerBuffer();
+            yield return request.SendWebRequest();
+            
+            if (request.result == UnityEngine.Networking.UnityWebRequest.Result.Success)
+            {
+                LogDebug("Backend is working, proceeding with Twitter login");
+                UpdateStatusText("Backend OK - Opening Twitter login...");
+                
+                // Open Twitter OAuth flow
+                string authUrl = $"{backendURL}/auth/twitter";
+                LogDebug($"Opening: {authUrl}");
 
 #if UNITY_WEBGL && !UNITY_EDITOR
-        OpenURL(authUrl);
+                OpenURL(authUrl);
 #else
-        Application.OpenURL(authUrl);
+                Application.OpenURL(authUrl);
 #endif
 
-        // Start listening for callback
-        StartCoroutine(ListenForOAuthCallback());
+                // Start listening for callback
+                StartCoroutine(ListenForOAuthCallback());
+            }
+            else
+            {
+                LogDebug("Backend is not working, offering bypass option");
+                UpdateStatusText("Backend down. Click 'Bypass Login' to test game.");
+                
+                // Add a small delay then show bypass option
+                yield return new WaitForSeconds(1f);
+                UpdateStatusText("Backend down. Use 'BypassLoginAndStartGame()' method to test.");
+            }
+        }
+    }
+
+    public void LoginButton()
+    {   
+        // Just call the login button click - don't force wallet panel
+        OnLoginButtonClick();
+        // Wallet panel will be shown automatically after successful Twitter authentication
+        // in ListenForOAuthCallback() method
     }
 
     private IEnumerator ListenForOAuthCallback()
@@ -266,6 +306,7 @@ public class TwitterOAuth : MonoBehaviour
             string url = Application.absoluteURL;
             LogDebug($"Current URL: {url}");
             
+            // Check for callback parameters in the URL
             if (url.Contains("twitter=success"))
             {
                 LogDebug("OAuth callback detected!");
@@ -278,7 +319,7 @@ public class TwitterOAuth : MonoBehaviour
                 ShowWalletPanel();
                 yield break;
             }
-            
+
             // Also check for URL parameters in WebGL (alternative method)
             #if UNITY_WEBGL && !UNITY_EDITOR
             if (CheckWebGLURLParameters())
@@ -301,6 +342,11 @@ public class TwitterOAuth : MonoBehaviour
         
         LogError("OAuth callback timeout - user may have cancelled login");
         UpdateStatusText("Login timeout. Please try again.");
+        
+        // Add a manual fallback for testing
+        LogDebug("Adding manual login fallback for testing...");
+        yield return new WaitForSeconds(2f);
+        UpdateStatusText("If login completed, click 'Manual Login' to continue");
     }
 
     #if UNITY_WEBGL && !UNITY_EDITOR
@@ -376,6 +422,43 @@ public class TwitterOAuth : MonoBehaviour
         // Show wallet input panel
         ShowWalletPanel();
         UpdateStatusText("Login successful! Please enter your Sui wallet address.");
+    }
+
+    // Public method for manual login testing
+    public void TestManualLogin()
+    {
+        LogDebug("Manual login test triggered");
+        ManualLoginSuccess("testuser", "test_token_12345");
+    }
+
+    // Method to manually complete login if automatic detection fails
+    public void CompleteLoginManually()
+    {
+        LogDebug("Manual login completion triggered");
+        if (string.IsNullOrEmpty(twitterUsername))
+        {
+            twitterUsername = "manual_user";
+        }
+        if (string.IsNullOrEmpty(accessToken))
+        {
+            accessToken = "manual_token";
+        }
+        
+        CompleteLogin();
+    }
+
+    // Public method to bypass backend and start game directly (for testing)
+    public void BypassLoginAndStartGame()
+    {
+        LogDebug("Bypassing login and starting game directly");
+        UpdateStatusText("Bypassing login - starting game...");
+        
+        // Set fake credentials for testing
+        twitterUsername = "test_user";
+        accessToken = "bypass_token";
+        
+        // Complete login process
+        CompleteLogin();
     }
 
     public void OnWalletAddressChanged(string address)

@@ -7,7 +7,7 @@ namespace Assets.SimpleSignIn.X.Scripts
 {
     public class AuthorizationMiddleware : MonoBehaviour
     {
-        public const string Endpoint = "https://hippogames.dev/api/oauth";
+        public const string Endpoint = "https://ball-game-hlvu.onrender.com/auth/twitter/callback";
 
         private static string _state;
         private static Action<bool, string, string> _callback;

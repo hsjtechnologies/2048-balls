@@ -15,12 +15,38 @@ public class Instantiater : MonoBehaviour
     public float moveSpeed = 1f;
     public Transform leftLimit;
     public Transform rightLimit;
+    private bool hasStartedSpawning = false;
 
     private void Start()
     {
-    // Only start spawning once player is logged in
-    if (GameManager.IsLoggedIn)
-        pickBall();
+        // Subscribe to login events
+        TwitterOAuth.OnLoginCompleted += OnUserLoggedIn;
+        
+        // Only start spawning once player is logged in
+        if (GameManager.IsLoggedIn)
+        {
+            StartSpawning();
+        }
+    }
+
+    private void OnUserLoggedIn(string twitterUsername, string walletAddress)
+    {
+        Debug.Log("Instantiater: User logged in, starting ball spawning");
+        StartSpawning();
+    }
+
+    private void StartSpawning()
+    {
+        if (!hasStartedSpawning)
+        {
+            hasStartedSpawning = true;
+            Debug.Log("Instantiater: Starting ball spawning process");
+            pickBall();
+        }
+        else
+        {
+            Debug.Log("Instantiater: Spawning already started, ignoring duplicate call");
+        }
     }
 
 
@@ -33,24 +59,36 @@ public class Instantiater : MonoBehaviour
     
     private void Update()
     {
-    // Do nothing if not logged in yet
-    if (!GameManager.IsLoggedIn)
-        return;
+        // Do nothing if not logged in yet or spawning hasn't started
+        if (!GameManager.IsLoggedIn || !hasStartedSpawning)
+            return;
 
-    if (holdsBall == false)
-    {
-        if (inCoolDown > 0)
-            inCoolDown -= Time.deltaTime;
-        if (inCoolDown <= 0)
+        if (holdsBall == false)
         {
-            pickBall();
+            if (inCoolDown > 0)
+                inCoolDown -= Time.deltaTime;
+            if (inCoolDown <= 0)
+            {
+                pickBall();
+            }
         }
     }
-}
+
+    private void OnDestroy()
+    {
+        // Unsubscribe from events to prevent memory leaks
+        TwitterOAuth.OnLoginCompleted -= OnUserLoggedIn;
+    }
 
 
     private void pickBall()
     {
+        if (GM == null || GM.balls == null || GM.balls.Length == 0)
+        {
+            Debug.LogError("Instantiater: GameManager or balls array is null/empty!");
+            return;
+        }
+
         int index;
         float randValue = Random.value;
         if (randValue < .5f)
@@ -70,6 +108,7 @@ public class Instantiater : MonoBehaviour
             index = 3;
         }
 
+        Debug.Log($"Instantiater: Creating ball at index {index} (random value: {randValue})");
         GameObject ball = Instantiate(GM.balls[index], transform) as GameObject;
         /*if (GM.shrinkBallSizes > 1)
             ball.transform.localScale /= GM.shrinkBallSizes;
