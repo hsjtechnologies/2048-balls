@@ -275,11 +275,11 @@ public class TwitterOAuth : MonoBehaviour
             else
             {
                 LogDebug("Backend is not working, offering bypass option");
-                UpdateStatusText("Backend down. Click 'Bypass Login' to test game.");
+                UpdateStatusText("Backend down. Call BypassLoginAndStartGame() to test game.");
                 
                 // Add a small delay then show bypass option
                 yield return new WaitForSeconds(1f);
-                UpdateStatusText("Backend down. Use 'BypassLoginAndStartGame()' method to test.");
+                UpdateStatusText("Backend down. In Console: FindObjectOfType<TwitterOAuth>().BypassLoginAndStartGame()");
             }
         }
     }
