@@ -81,12 +81,12 @@ app.get("/auth/twitter/callback", async (req, res) => {
       console.log("✅ Username:", username);
       
       // Redirect back to Unity game with both token and username
-      res.redirect(`https://ball-game-lilac.vercel.app?twitter=success&token=${accessToken}&username=${username}`);
+      res.redirect(`https://ball-game-235m.vercel.app?twitter=success&token=${accessToken}&username=${username}`);
       
     } catch (userError) {
       console.error("❌ Error getting user info:", userError.response?.data || userError.message);
       // Fallback: redirect with just token
-      res.redirect(`https://ball-game-lilac.vercel.app?twitter=success&token=${accessToken}`);
+      res.redirect(`https://ball-game-235m.vercel.app?twitter=success&token=${accessToken}`);
     }
 
   } catch (error) {
