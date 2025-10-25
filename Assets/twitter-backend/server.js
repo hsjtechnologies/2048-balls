@@ -21,6 +21,9 @@ const SCOPES = "tweet.read users.read offline.access";
 const CODE_VERIFIER = crypto.randomBytes(32).toString('base64url');
 const CODE_CHALLENGE = crypto.createHash('sha256').update(CODE_VERIFIER).digest('base64url');
 
+console.log("🔐 PKCE Code Verifier:", CODE_VERIFIER.substring(0, 10) + "...");
+console.log("🔐 PKCE Code Challenge:", CODE_CHALLENGE.substring(0, 10) + "...");
+
 app.get("/auth/twitter", (req, res) => {
   const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(
     REDIRECT_URI
@@ -69,6 +72,7 @@ app.get("/auth/twitter/callback", async (req, res) => {
     
     // Get user info from Twitter API
     const accessToken = tokenResponse.data.access_token;
+    let username = "unknown_user";
     
     try {
       const userResponse = await axios.get("https://api.twitter.com/2/users/me", {
@@ -77,17 +81,17 @@ app.get("/auth/twitter/callback", async (req, res) => {
         }
       });
       
-      const username = userResponse.data.data.username;
+      username = userResponse.data.data.username;
       console.log("✅ Username:", username);
-      
-      // Redirect back to Unity game with both token and username
-      res.redirect(`https://ball-game-235m.vercel.app?twitter=success&token=${accessToken}&username=${username}`);
       
     } catch (userError) {
       console.error("❌ Error getting user info:", userError.response?.data || userError.message);
-      // Fallback: redirect with just token
-      res.redirect(`https://ball-game-235m.vercel.app?twitter=success&token=${accessToken}`);
+      console.log("⚠️ Continuing with fallback username");
     }
+
+    // Always redirect with token and username (even if username is fallback)
+    console.log("🔄 Redirecting to game with token and username");
+    return res.redirect(`https://ball-game-235m.vercel.app?twitter=success&token=${accessToken}&username=${username}`);
 
   } catch (error) {
     console.error("❌ FULL OAUTH ERROR:");
@@ -95,12 +99,13 @@ app.get("/auth/twitter/callback", async (req, res) => {
     console.error("Data:", error.response?.data);
     console.error("Message:", error.message);
     
+    // Send error response
     if (error.response?.status === 401) {
-      res.send("❌ Authentication failed: Invalid credentials or authorization header");
+      return res.status(401).send("❌ Authentication failed: Invalid credentials or authorization header");
     } else if (error.response?.status === 400) {
-      res.send("❌ Bad request: Check code verifier and redirect URI");
+      return res.status(400).send("❌ Bad request: Check code verifier and redirect URI");
     } else {
-      res.send("❌ Authentication failed. Check backend console for details.");
+      return res.status(500).send("❌ Authentication failed. Check backend console for details.");
     }
   }
 });
