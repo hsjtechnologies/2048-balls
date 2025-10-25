@@ -122,27 +122,17 @@ public class SuiWalletManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Validate Sui wallet address format
-    /// Sui addresses: 0x + 64 hex characters = 66 total characters
+    /// Simple Sui wallet address format validation
+    /// Just checks: starts with 0x and is exactly 66 characters total
+    /// No hex character validation - just basic format check
     /// </summary>
     public bool IsValidSuiAddress(string address)
     {
         if (string.IsNullOrEmpty(address))
             return false;
 
-        // Sui address must start with 0x and be 66 characters long
-        if (!address.StartsWith("0x") || address.Length != 66)
-            return false;
-
-        // Check if all characters after 0x are valid hex
-        for (int i = 2; i < address.Length; i++)
-        {
-            char c = address[i];
-            if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')))
-                return false;
-        }
-
-        return true;
+        // Simple validation: just check format (0x + 66 characters total)
+        return address.StartsWith("0x") && address.Length == 66;
     }
 
     /// <summary>
@@ -167,7 +157,7 @@ public class SuiWalletManager : MonoBehaviour
         else
         {
             LogError($"Invalid Sui address format: {address}");
-            OnWalletConnectionFailed?.Invoke("Invalid Sui wallet address format (must be 0x + 64 hex characters)");
+            OnWalletConnectionFailed?.Invoke("Invalid wallet address format (must start with 0x and be exactly 66 characters)");
         }
     }
 

@@ -225,11 +225,11 @@ public class SimpleSignInManager : MonoBehaviour
         
         if (isValid)
         {
-            UpdateStatusText("Valid Sui wallet address. Click confirm to continue.");
+            UpdateStatusText("Valid wallet address format. Click confirm to continue.");
         }
         else if (!string.IsNullOrEmpty(suiWalletAddress))
         {
-            UpdateStatusText("Invalid Sui wallet address (must start with 0x and be 66 characters)");
+            UpdateStatusText("Invalid format - must start with 0x and be exactly 66 characters");
         }
     }
 
@@ -238,7 +238,8 @@ public class SimpleSignInManager : MonoBehaviour
         if (string.IsNullOrEmpty(address))
             return false;
         
-        // Sui address validation (starts with 0x and is 66 characters long)
+        // Simple Sui address validation: just check format (0x + 66 characters total)
+        // No need to validate hex characters - just basic format check
         return address.StartsWith("0x") && address.Length == 66;
     }
 
@@ -256,7 +257,7 @@ public class SimpleSignInManager : MonoBehaviour
         if (string.IsNullOrEmpty(suiWalletAddress) || !IsValidSuiAddress(suiWalletAddress))
         {
             LogError($"Invalid wallet address: '{suiWalletAddress}'");
-            UpdateStatusText("Please enter a valid Sui wallet address (0x + 66 characters)");
+            UpdateStatusText("Please enter a valid wallet address (0x + exactly 66 characters)");
             return;
         }
 
@@ -270,6 +271,9 @@ public class SimpleSignInManager : MonoBehaviour
         PlayerPrefs.SetString($"wallet_{twitterId}", suiWalletAddress);
         PlayerPrefs.Save();
 
+        // Save user data to Google Sheets immediately
+        SaveUserDataToSheets();
+        
         // Complete login process
         CompleteLogin();
     }
@@ -411,6 +415,30 @@ public class SimpleSignInManager : MonoBehaviour
     public string TwitterUsername => twitterUsername;
     public string TwitterName => twitterName;
     public string WalletAddress => suiWalletAddress;
+
+    /// <summary>
+    /// Save user data (username + wallet) to Google Sheets immediately after wallet confirmation
+    /// </summary>
+    private void SaveUserDataToSheets()
+    {
+        if (string.IsNullOrEmpty(twitterUsername) || string.IsNullOrEmpty(suiWalletAddress))
+        {
+            LogError("Cannot save user data - missing username or wallet address");
+            return;
+        }
+
+        GoogleSheetsLogger sheetsLogger = FindObjectOfType<GoogleSheetsLogger>();
+        if (sheetsLogger != null)
+        {
+            // Log user registration with score 0 to indicate this is a user registration, not a game score
+            sheetsLogger.LogScore(twitterUsername, suiWalletAddress, 0, 0, "User Registration");
+            LogDebug($"User data saved to Google Sheets: @{twitterUsername} - {suiWalletAddress}");
+        }
+        else
+        {
+            LogError("GoogleSheetsLogger not found in scene - user data not saved");
+        }
+    }
 
     // Method to log scores to Google Sheets
     public void LogScoreToDatabase(int score, int level = 1)

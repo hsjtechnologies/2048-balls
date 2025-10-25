@@ -14,16 +14,27 @@ public class Ball : MonoBehaviour
 
     private void Start()
     {
-        // Add null check for GameManager
-        GameObject gmObject = GameObject.Find("GameManager");
-        if (gmObject != null)
+        // Try multiple ways to find GameManager
+        GM = FindObjectOfType<GameManager>();
+        
+        if (GM == null)
         {
-            GM = gmObject.GetComponent<GameManager>();
+            // Try finding by name as fallback
+            GameObject gmObject = GameObject.Find("GameManager");
+            if (gmObject != null)
+            {
+                GM = gmObject.GetComponent<GameManager>();
+            }
+        }
+        
+        if (GM == null)
+        {
+            Debug.LogError("GameManager not found in scene! Ball will not function properly.");
+            // Don't return, let the ball exist but with limited functionality
         }
         else
         {
-            Debug.LogError("GameManager not found in scene!");
-            return;
+            Debug.Log("GameManager found successfully for ball: " + gameObject.name);
         }
 
         rb = GetComponent<Rigidbody>();
