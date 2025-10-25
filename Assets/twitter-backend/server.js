@@ -33,15 +33,27 @@ app.get("/auth/twitter", (req, res) => {
 });
 
 app.get("/auth/twitter/callback", async (req, res) => {
-  const { code, state } = req.query;
+  const { code, state, error, error_description } = req.query;
   
   console.log("📞 OAuth callback received");
+  console.log("Full query params:", req.query);
   console.log("Code:", code ? "Present" : "Missing");
   console.log("State:", state);
+  console.log("Error:", error);
+  console.log("Error Description:", error_description);
+
+  if (error) {
+    console.error("❌ OAuth Error:", error, error_description);
+    return res.status(400).send(`❌ OAuth Error: ${error} - ${error_description}`);
+  }
 
   if (!code) {
     console.error("❌ No authorization code received");
-    return res.status(400).send("❌ No authorization code received");
+    console.error("❌ This usually means:");
+    console.error("   1. User cancelled the login");
+    console.error("   2. Twitter App callback URL is wrong");
+    console.error("   3. Twitter App is not configured for OAuth 2.0");
+    return res.status(400).send("❌ Missing code. Did you cancel the login?");
   }
 
   try {
