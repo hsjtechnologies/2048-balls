@@ -22,13 +22,18 @@ const CODE_VERIFIER = crypto.randomBytes(32).toString('base64url');
 const CODE_CHALLENGE = crypto.createHash('sha256').update(CODE_VERIFIER).digest('base64url');
 
 app.get("/auth/twitter", (req, res) => {
+  // Add timestamp to force new OAuth session and clear any cached state
+  const timestamp = Date.now();
+  const state = `state_${timestamp}`;
+  
   const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(
     REDIRECT_URI
   )}&scope=${encodeURIComponent(
     SCOPES
-  )}&state=state123&code_challenge=${CODE_CHALLENGE}&code_challenge_method=S256`;
+  )}&state=${state}&code_challenge=${CODE_CHALLENGE}&code_challenge_method=S256`;
 
   console.log("🔗 Redirecting to Twitter OAuth:", authUrl);
+  console.log("🔄 Using fresh state:", state);
   res.redirect(authUrl);
 });
 
