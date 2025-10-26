@@ -6,8 +6,8 @@ const crypto = require("crypto");
 const app = express();
 
 // TODO: Replace these values with your NEW Twitter app credentials
-const CLIENT_ID = "MEFHT3dRajQ0cFFGNTQyZzB5Qzc6MTpjaQ";
-const CLIENT_SECRET = "xWHiDsz1nU5FPXMEQL89lgd_-2dAJwl-5T3idF0P2shRl_7yrW";
+const CLIENT_ID = "S1A3NkVGWVpTOTcyTzRLTjMzbmg6MTpjaQ";
+const CLIENT_SECRET = "sSwu5niZOz9tlrg9ctTEUHy9F9CP1ZjBOQSBcevNSZHX_k5MU2";
 const REDIRECT_URI = "https://ball-game-hlvu.onrender.com/auth/twitter/callback";
 
 // Validate credentials
@@ -97,12 +97,12 @@ app.get("/auth/twitter/callback", async (req, res) => {
       console.log("✅ Username:", username);
       
       // Redirect back to Unity game with both token and username
-      res.redirect(`https://ball-game-235m.vercel.app?twitter=success&token=${accessToken}&username=${username}`);
+      res.redirect(`https://app.suihotdog.com?twitter=success&token=${accessToken}&username=${username}`);
       
     } catch (userError) {
       console.error("❌ Error getting user info:", userError.response?.data || userError.message);
       // Fallback: redirect with just token
-      res.redirect(`https://ball-game-235m.vercel.app?twitter=success&token=${accessToken}`);
+      res.redirect(`https://app.suihotdog.com?twitter=success&token=${accessToken}`);
     }
 
   } catch (error) {

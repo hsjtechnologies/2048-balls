@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     public static bool IsLoggedIn = false; //tracks login status
     public GameObject[] balls;
+    public GameObject menuGameObject; // Reference to the Menu GameObject to disable after login
     private bool gameOver = false;
     [SerializeField]
     private float score = 0;
@@ -42,8 +43,34 @@ public class GameManager : MonoBehaviour
         TwitterOAuth.OnLoginCompleted += OnUserLoggedIn;
         TwitterOAuth.OnLogoutCompleted += OnUserLoggedOut;
         
+        // TEMPORARY: Bypass login for testing prefab spawning
+        // IsLoggedIn = true;
+        // Time.timeScale = 1f;
+        // Debug.Log("BYPASSED LOGIN FOR TESTING - Prefabs should now spawn");
+        
+        // Check if user was already logged in from a previous session
+        string savedUsername = PlayerPrefs.GetString("twitter_username", "");
+        
+        // Also check for OAuth callback in URL parameters
+        string url = Application.absoluteURL;
+        bool hasOAuthCallback = !string.IsNullOrEmpty(url) && url.Contains("twitter=success");
+        
+        if (!string.IsNullOrEmpty(savedUsername) || hasOAuthCallback)
+        {
+            IsLoggedIn = true;
+            Time.timeScale = 1f;
+            string username = hasOAuthCallback ? "OAuth callback detected" : savedUsername;
+            Debug.Log($"Game started - user was already logged in: {username}");
+            
+            // Disable the Menu GameObject since user is already logged in
+            if (menuGameObject != null)
+            {
+                menuGameObject.SetActive(false);
+                Debug.Log("Menu GameObject disabled - user already logged in");
+            }
+        }
         // Check login status
-        if (!IsLoggedIn)
+        else if (!IsLoggedIn)
         {
             Time.timeScale = 0f; // Pause all physics & updates
             Debug.Log("Game paused - waiting for user login");
@@ -159,8 +186,18 @@ public class GameManager : MonoBehaviour
             GameObject g = (GameObject) o;
             if (g.tag == "Ball")
             {
-                g.gameObject.GetComponent<MeshRenderer>().material.color = Color.grey;
-                g.transform.GetChild(0).gameObject.SetActive(false);
+                // Change ball color to grey
+                MeshRenderer meshRenderer = g.gameObject.GetComponent<MeshRenderer>();
+                if (meshRenderer != null && meshRenderer.material != null)
+                {
+                    meshRenderer.material.color = Color.grey;
+                }
+                
+                // Only disable first child if it exists
+                if (g.transform.childCount > 0)
+                {
+                    g.transform.GetChild(0).gameObject.SetActive(false);
+                }
             }
             yield return wait; //Pause the loop for 3 seconds.
         }
@@ -171,9 +208,19 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log($"User logged in: @{twitterUsername} with wallet: {walletAddress}");
         
-        // Resume game
-        Time.timeScale = 1f;
+        // Ensure game state is properly set
         IsLoggedIn = true;
+        Time.timeScale = 1f;
+        
+        Debug.Log($"GameManager: Login confirmed - Time.timeScale set to {Time.timeScale}");
+        Debug.Log($"GameManager: IsLoggedIn is now {IsLoggedIn}");
+        
+        // Disable the Menu GameObject after successful login (safety check)
+        if (menuGameObject != null)
+        {
+            menuGameObject.SetActive(false);
+            Debug.Log("Menu GameObject disabled by GameManager after successful login");
+        }
         
         // You can add additional game initialization here
         // For example, load user-specific data, achievements, etc.
@@ -186,6 +233,13 @@ public class GameManager : MonoBehaviour
         // Pause game
         Time.timeScale = 0f;
         IsLoggedIn = false;
+        
+        // Re-enable the Menu GameObject on logout (safety check)
+        if (menuGameObject != null)
+        {
+            menuGameObject.SetActive(true);
+            Debug.Log("Menu GameObject re-enabled by GameManager on logout");
+        }
         
         // You can add cleanup logic here
         // For example, save current progress, reset game state, etc.

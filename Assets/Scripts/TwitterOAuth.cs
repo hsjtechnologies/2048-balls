@@ -17,10 +17,11 @@ public class TwitterOAuth : MonoBehaviour
     public TMP_InputField walletAddressInput;
     public Button confirmWalletButton;
     public Button logoutButton;
+    public GameObject menuGameObject; // The Menu GameObject to disable after login
 
     [Header("Backend Configuration")]
     public string backendURL = "https://ball-game-hlvu.onrender.com";
-    public string gameURL = "https://ball-game-235m.vercel.app/";
+    public string gameURL = "https://app.suihotdog.com/";
     public bool debugMode = true;
     [Tooltip("If true, creates a minimal UI at runtime when references are missing.")]
     public bool autoCreateUIIfMissing = false;
@@ -43,7 +44,33 @@ public class TwitterOAuth : MonoBehaviour
     private void Start()
     {
         InitializeUI();
-        CheckExistingLogin();
+        
+        // Check for OAuth callback in URL parameters
+        CheckForOAuthCallbackInURL();
+        
+        // Only check PlayerPrefs if there's no OAuth callback in URL
+        if (!string.IsNullOrEmpty(Application.absoluteURL) && !Application.absoluteURL.Contains("twitter=success"))
+        {
+            CheckExistingLogin();
+        }
+    }
+    
+    private void CheckForOAuthCallbackInURL()
+    {
+        string url = Application.absoluteURL;
+        
+        if (!string.IsNullOrEmpty(url) && url.Contains("twitter=success"))
+        {
+            LogDebug("=== OAuth callback detected in URL on Start ===");
+            LogDebug($"URL: {url}");
+            UpdateStatusText("Login successful! Processing...");
+            
+            // Extract username and token from URL parameters
+            ExtractOAuthData(url);
+            
+            // Handle post-login flow
+            HandlePostLoginFlow();
+        }
     }
 
     private void InitializeUI()
@@ -228,6 +255,14 @@ public class TwitterOAuth : MonoBehaviour
         if (!string.IsNullOrEmpty(savedUsername))
         {
             twitterUsername = savedUsername;
+            
+            // Disable the Menu GameObject since user is already logged in
+            if (menuGameObject != null)
+            {
+                menuGameObject.SetActive(false);
+                LogDebug("Menu GameObject disabled - user already logged in");
+            }
+            
             CompleteLogin();
         }
     }
@@ -456,6 +491,14 @@ public class TwitterOAuth : MonoBehaviour
         LogDebug($"Setting GameManager.IsLoggedIn = true");
         LogDebug($"Setting Time.timeScale = 1f");
         
+        // Save the username to PlayerPrefs so it persists after reload
+        if (!string.IsNullOrEmpty(twitterUsername))
+        {
+            PlayerPrefs.SetString("twitter_username", twitterUsername);
+            PlayerPrefs.Save();
+            LogDebug($"Saved username to PlayerPrefs: {twitterUsername}");
+        }
+        
         // Set game state
         GameManager.IsLoggedIn = true;
         Time.timeScale = 1f;
@@ -463,6 +506,17 @@ public class TwitterOAuth : MonoBehaviour
         
         LogDebug($"GameManager.IsLoggedIn is now: {GameManager.IsLoggedIn}");
         LogDebug($"Time.timeScale is now: {Time.timeScale}");
+        
+        // Disable the Menu GameObject after successful login
+        if (menuGameObject != null)
+        {
+            menuGameObject.SetActive(false);
+            LogDebug("Menu GameObject disabled after successful login");
+        }
+        else
+        {
+            LogDebug("WARNING: menuGameObject is not assigned - Menu may still be visible");
+        }
         
         // Update UI
         UpdateStatusText($"Welcome @{twitterUsername}! Game ready to play!");
@@ -492,6 +546,13 @@ public class TwitterOAuth : MonoBehaviour
         // Reset variables
         twitterUsername = "";
         accessToken = "";
+        
+        // Re-enable the Menu GameObject on logout
+        if (menuGameObject != null)
+        {
+            menuGameObject.SetActive(true);
+            LogDebug("Menu GameObject re-enabled on logout");
+        }
         
         // Reset UI
         ShowLoginPanel();
