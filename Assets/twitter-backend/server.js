@@ -61,53 +61,25 @@ app.get("/auth/twitter/callback", async (req, res) => {
     const credentials = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64");
     console.log("🔑 Using credentials:", credentials.substring(0, 10) + "...");
 
-    // Add a small delay to prevent rate limiting during testing
+    // Add a longer delay to prevent rate limiting during testing
     console.log("⏳ Waiting 5 seconds to prevent rate limiting...");
     await new Promise(resolve => setTimeout(resolve, 5000));
 
-    let tokenResponse;
-    try {
-      tokenResponse = await axios.post(
-        "https://api.twitter.com/2/oauth2/token",
-        querystring.stringify({
-          code: code,
-          grant_type: "authorization_code",
-          redirect_uri: REDIRECT_URI,
-          code_verifier: CODE_VERIFIER
-        }),
-        {
-          headers: {
-            "Authorization": `Basic ${credentials}`,
-            "Content-Type": "application/x-www-form-urlencoded"
-          }
+    const tokenResponse = await axios.post(
+      "https://api.twitter.com/2/oauth2/token",
+      querystring.stringify({
+        code: code,
+        grant_type: "authorization_code",
+        redirect_uri: REDIRECT_URI,
+        code_verifier: CODE_VERIFIER
+      }),
+      {
+        headers: {
+          "Authorization": `Basic ${credentials}`,
+          "Content-Type": "application/x-www-form-urlencoded"
         }
-      );
-    } catch (tokenError) {
-      if (tokenError.response?.status === 429) {
-        console.error("⚠️ Rate limited by Twitter API");
-        console.error("⏳ Retrying after 10 seconds...");
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        
-        // Retry once
-        tokenResponse = await axios.post(
-          "https://api.twitter.com/2/oauth2/token",
-          querystring.stringify({
-            code: code,
-            grant_type: "authorization_code",
-            redirect_uri: REDIRECT_URI,
-            code_verifier: CODE_VERIFIER
-          }),
-          {
-            headers: {
-              "Authorization": `Basic ${credentials}`,
-              "Content-Type": "application/x-www-form-urlencoded"
-            }
-          }
-        );
-      } else {
-        throw tokenError;
       }
-    }
+    );
 
     console.log("✅ Access token:", tokenResponse.data);
     
@@ -145,14 +117,31 @@ app.get("/auth/twitter/callback", async (req, res) => {
       res.send("❌ Bad request: Check code verifier and redirect URI");
     } else if (error.response?.status === 429) {
       console.error("⚠️ Rate limit exceeded - Twitter API is throttling requests");
+      
+      // Try to get rate limit info from headers
+      const retryAfter = error.response?.headers?.['retry-after'] || error.response?.headers?.['x-rate-limit-reset'];
+      const resetTime = retryAfter ? `${retryAfter} seconds` : "15-30 minutes";
+      
       res.send(`
         ❌ Twitter API Rate Limit Exceeded
         
-        You've made too many requests to Twitter's API. Please wait 15-30 minutes before trying again.
+        <p>You've made too many requests to Twitter's API.</p>
+        <p><strong>Please wait ${resetTime} before trying again.</strong></p>
         
-        This is normal during testing. In production, implement proper rate limiting.
+        <hr>
         
-        <a href="/auth/twitter">Try Again</a>
+        <h3>This is normal during testing!</h3>
+        <p>Twitter limits how often you can test the OAuth flow.</p>
+        
+        <h3>Quick Fixes:</h3>
+        <ul>
+          <li>✅ Wait 15-30 minutes (recommended)</li>
+          <li>✅ Try a different browser</li>
+          <li>✅ Try from incognito/private mode</li>
+          <li>✅ Use a different Twitter account</li>
+        </ul>
+        
+        <p><a href="/auth/twitter">Try Again (if enough time has passed)</a></p>
       `);
     } else {
       res.send("❌ Authentication failed. Check backend console for details.");
