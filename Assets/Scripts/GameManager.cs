@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public GameObject[] balls;
     public GameObject menuGameObject; // Reference to the Menu GameObject to disable after login
     public GameObject gameOverGameObject; // Reference to the Game Over GameObject to enable when game ends
+    public GameObject suiGameObject; // Reference to the SUI GameObject to enable after login
     private bool gameOver = false;
     [SerializeField]
     private float score = 0;
@@ -29,6 +30,8 @@ public class GameManager : MonoBehaviour
     //private long howmany2048best = 0;
     [SerializeField]
     private TMP_Text scoreText;
+    [SerializeField]
+    private TMP_Text currentScoreText; // Display the actual current score
     [SerializeField]
     private TMP_Text LevelText;
     [SerializeField]
@@ -69,6 +72,13 @@ public class GameManager : MonoBehaviour
                 menuGameObject.SetActive(false);
                 Debug.Log("Menu GameObject disabled - user already logged in");
             }
+            
+            // Enable the SUI GameObject since user is already logged in
+            if (suiGameObject != null)
+            {
+                suiGameObject.SetActive(true);
+                Debug.Log("SUI GameObject enabled - user already logged in");
+            }
         }
         // Check login status
         else if (!IsLoggedIn)
@@ -100,6 +110,10 @@ public class GameManager : MonoBehaviour
         scoreSlider.value = score;
         howmany2048Text.text = howmany2048.ToString();
         scoreText.text = (remainingForNextLevel - score).ToString();
+        
+        // Display current score
+        if (currentScoreText != null)
+            currentScoreText.text = score.ToString();
     }
 
     void shrinkSizes()
@@ -143,6 +157,11 @@ public class GameManager : MonoBehaviour
         }
         scoreSlider.value = score;
         scoreText.text = (remainingForNextLevel - score).ToString();
+        
+        // Update current score display
+        if (currentScoreText != null)
+            currentScoreText.text = score.ToString();
+            
         PlayerPrefs.SetFloat("score", score);
     }
 
@@ -233,6 +252,17 @@ public class GameManager : MonoBehaviour
             Debug.Log("Menu GameObject disabled by GameManager after successful login");
         }
         
+        // Enable the SUI GameObject after menu is disabled
+        if (suiGameObject != null)
+        {
+            suiGameObject.SetActive(true);
+            Debug.Log("SUI GameObject enabled after successful login");
+        }
+        else
+        {
+            Debug.LogWarning("SUI GameObject not assigned in GameManager");
+        }
+        
         // You can add additional game initialization here
         // For example, load user-specific data, achievements, etc.
     }
@@ -250,6 +280,13 @@ public class GameManager : MonoBehaviour
         {
             menuGameObject.SetActive(true);
             Debug.Log("Menu GameObject re-enabled by GameManager on logout");
+        }
+        
+        // Disable the SUI GameObject on logout
+        if (suiGameObject != null)
+        {
+            suiGameObject.SetActive(false);
+            Debug.Log("SUI GameObject disabled by GameManager on logout");
         }
         
         // You can add cleanup logic here
@@ -273,6 +310,8 @@ public class GameManager : MonoBehaviour
         // Reset UI elements
         if (scoreText != null)
             scoreText.text = remainingForNextLevel.ToString();
+        if (currentScoreText != null)
+            currentScoreText.text = "0";
         if (LevelText != null)
             LevelText.text = level.ToString();
         if (NextLevelText != null)
