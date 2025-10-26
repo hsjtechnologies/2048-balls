@@ -6,8 +6,8 @@ const crypto = require("crypto");
 const app = express();
 
 // TODO: Replace these values with your NEW Twitter app credentials
-const CLIENT_ID = "VzZiZDdqbVo5ZDByMzBDdjhKVmw6MTpjaQ";
-const CLIENT_SECRET = "3rS62pwkfYTHCTXvgKXNBa7zS1sOAe5drYPvPNmu2tyInXHxBt";
+const CLIENT_ID = "MEFHT3dRajQ0cFFGNTQyZzB5Qzc6MTpjaQ";
+const CLIENT_SECRET = "xWHiDsz1nU5FPXMEQL89lgd_-2dAJwl-5T3idF0P2shRl_7yrW";
 const REDIRECT_URI = "https://ball-game-hlvu.onrender.com/auth/twitter/callback";
 
 // Validate credentials
