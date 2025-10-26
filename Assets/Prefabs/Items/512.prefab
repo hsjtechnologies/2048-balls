@@ -87,6 +87,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: 512
       objectReference: {fileID: 0}
+    - target: {fileID: 5958848402918016687, guid: 5f5495efcfb686d48b70f81fc77b9f74, type: 3}
+      propertyPath: m_Mass
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5958848402918016687, guid: 5f5495efcfb686d48b70f81fc77b9f74, type: 3}
+      propertyPath: m_Constraints
+      value: 120
+      objectReference: {fileID: 0}
     - target: {fileID: 5958848404576143085, guid: 5f5495efcfb686d48b70f81fc77b9f74, type: 3}
       propertyPath: m_IsActive
       value: 0

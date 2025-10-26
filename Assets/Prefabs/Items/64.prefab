@@ -11,6 +11,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: 64
       objectReference: {fileID: 0}
+    - target: {fileID: 2392875019901936353, guid: 343d6cefdb5e529469ec6113cdf56ea7, type: 3}
+      propertyPath: m_Mass
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2392875019901936353, guid: 343d6cefdb5e529469ec6113cdf56ea7, type: 3}
+      propertyPath: m_Constraints
+      value: 120
+      objectReference: {fileID: 0}
     - target: {fileID: 2392875019901936354, guid: 343d6cefdb5e529469ec6113cdf56ea7, type: 3}
       propertyPath: m_Enabled
       value: 0
