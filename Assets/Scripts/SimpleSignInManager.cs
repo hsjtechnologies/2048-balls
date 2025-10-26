@@ -20,6 +20,7 @@ public class SimpleSignInManager : MonoBehaviour
     public TMP_InputField walletAddressInput;
     public Button confirmWalletButton;
     public Button logoutButton;
+    public GameObject menuGameObject; // The Menu GameObject to disable after login
 
     [Header("Settings")]
     public bool debugMode = true;
@@ -86,15 +87,21 @@ public class SimpleSignInManager : MonoBehaviour
 
     private void CheckExistingLogin()
     {
-        // Check if user was previously logged in
+        // Check if user was previously logged in (only check username now)
         string savedUsername = PlayerPrefs.GetString("twitter_username", "");
-        string savedWallet = PlayerPrefs.GetString("sui_wallet", "");
         
-        if (!string.IsNullOrEmpty(savedUsername) && !string.IsNullOrEmpty(savedWallet))
+        if (!string.IsNullOrEmpty(savedUsername))
         {
             LogDebug("Found existing login session");
             twitterUsername = savedUsername;
-            suiWalletAddress = savedWallet;
+            
+            // Disable the Menu GameObject since user is already logged in
+            if (menuGameObject != null)
+            {
+                menuGameObject.SetActive(false);
+                LogDebug("Menu GameObject disabled - user already logged in");
+            }
+            
             CompleteLogin();
         }
     }
@@ -131,28 +138,8 @@ public class SimpleSignInManager : MonoBehaviour
             if (usernameText != null)
                 usernameText.text = $"Welcome, {userInfo.Name}!\n@{userInfo.Username}";
             
-            // Show wallet input panel
-            ShowWalletPanel();
-            
-            // Check if wallet address is already saved
-            string savedWallet = PlayerPrefs.GetString($"wallet_{userInfo.Id}", "");
-            if (!string.IsNullOrEmpty(savedWallet))
-            {
-                suiWalletAddress = savedWallet;
-                if (walletAddressInput != null)
-                    walletAddressInput.text = savedWallet;
-                
-                // Auto-confirm if we have a saved wallet
-                LogDebug("Found saved wallet, auto-confirming");
-                UpdateStatusText("Using saved Sui wallet address...");
-                OnConfirmWalletClick();
-            }
-            else
-            {
-                // Try to connect Sui Wallet automatically
-                UpdateStatusText("Connecting to Sui Wallet...");
-                TryConnectSuiWallet();
-            }
+            // Skip wallet input, go directly to game
+            CompleteLogin();
         }
         else
         {
@@ -225,11 +212,11 @@ public class SimpleSignInManager : MonoBehaviour
         
         if (isValid)
         {
-            UpdateStatusText("Valid Sui wallet address. Click confirm to continue.");
+            UpdateStatusText("Valid wallet address format. Click confirm to continue.");
         }
         else if (!string.IsNullOrEmpty(suiWalletAddress))
         {
-            UpdateStatusText("Invalid Sui wallet address (must start with 0x and be 66 characters)");
+            UpdateStatusText("Invalid format - must start with 0x and be exactly 66 characters");
         }
     }
 
@@ -238,7 +225,8 @@ public class SimpleSignInManager : MonoBehaviour
         if (string.IsNullOrEmpty(address))
             return false;
         
-        // Sui address validation (starts with 0x and is 66 characters long)
+        // Simple Sui address validation: just check format (0x + 66 characters total)
+        // No need to validate hex characters - just basic format check
         return address.StartsWith("0x") && address.Length == 66;
     }
 
@@ -256,7 +244,7 @@ public class SimpleSignInManager : MonoBehaviour
         if (string.IsNullOrEmpty(suiWalletAddress) || !IsValidSuiAddress(suiWalletAddress))
         {
             LogError($"Invalid wallet address: '{suiWalletAddress}'");
-            UpdateStatusText("Please enter a valid Sui wallet address (0x + 66 characters)");
+            UpdateStatusText("Please enter a valid wallet address (0x + exactly 66 characters)");
             return;
         }
 
@@ -270,6 +258,9 @@ public class SimpleSignInManager : MonoBehaviour
         PlayerPrefs.SetString($"wallet_{twitterId}", suiWalletAddress);
         PlayerPrefs.Save();
 
+        // Save user data to Google Sheets immediately
+        SaveUserDataToSheets();
+        
         // Complete login process
         CompleteLogin();
     }
@@ -280,6 +271,14 @@ public class SimpleSignInManager : MonoBehaviour
         LogDebug($"Setting GameManager.IsLoggedIn = true");
         LogDebug($"Setting Time.timeScale = 1f");
         
+        // Save the username to PlayerPrefs so it persists after reload
+        if (!string.IsNullOrEmpty(twitterUsername))
+        {
+            PlayerPrefs.SetString("twitter_username", twitterUsername);
+            PlayerPrefs.Save();
+            LogDebug($"Saved username to PlayerPrefs: {twitterUsername}");
+        }
+        
         // Set game state
         GameManager.IsLoggedIn = true;
         Time.timeScale = 1f;
@@ -288,13 +287,24 @@ public class SimpleSignInManager : MonoBehaviour
         LogDebug($"GameManager.IsLoggedIn is now: {GameManager.IsLoggedIn}");
         LogDebug($"Time.timeScale is now: {Time.timeScale}");
         
+        // Disable the Menu GameObject after successful login
+        if (menuGameObject != null)
+        {
+            menuGameObject.SetActive(false);
+            LogDebug("Menu GameObject disabled after successful login");
+        }
+        else
+        {
+            LogDebug("WARNING: menuGameObject is not assigned - Menu may still be visible");
+        }
+        
         // Update UI
-        UpdateStatusText($"Welcome! Game ready. Wallet: {suiWalletAddress.Substring(0, 10)}...");
+        UpdateStatusText($"Welcome @{twitterUsername}! Game ready to play!");
         ShowGamePanel();
         
         LogDebug("Calling OnLoginCompleted event");
-        // Notify other systems
-        OnLoginCompleted?.Invoke(twitterUsername, suiWalletAddress);
+        // Notify other systems (pass empty wallet address since we're not using it)
+        OnLoginCompleted?.Invoke(twitterUsername, "");
         
         LogDebug("CompleteLogin finished successfully");
     }
@@ -333,6 +343,13 @@ public class SimpleSignInManager : MonoBehaviour
         
         if (walletAddressInput != null)
             walletAddressInput.text = "";
+        
+        // Re-enable the Menu GameObject on logout
+        if (menuGameObject != null)
+        {
+            menuGameObject.SetActive(true);
+            LogDebug("Menu GameObject re-enabled on logout");
+        }
         
         // Reset UI
         ShowLoginPanel();
@@ -411,6 +428,30 @@ public class SimpleSignInManager : MonoBehaviour
     public string TwitterUsername => twitterUsername;
     public string TwitterName => twitterName;
     public string WalletAddress => suiWalletAddress;
+
+    /// <summary>
+    /// Save user data (username + wallet) to Google Sheets immediately after wallet confirmation
+    /// </summary>
+    private void SaveUserDataToSheets()
+    {
+        if (string.IsNullOrEmpty(twitterUsername) || string.IsNullOrEmpty(suiWalletAddress))
+        {
+            LogError("Cannot save user data - missing username or wallet address");
+            return;
+        }
+
+        GoogleSheetsLogger sheetsLogger = FindObjectOfType<GoogleSheetsLogger>();
+        if (sheetsLogger != null)
+        {
+            // Log user registration with score 0 to indicate this is a user registration, not a game score
+            sheetsLogger.LogScore(twitterUsername, suiWalletAddress, 0, 0, "User Registration");
+            LogDebug($"User data saved to Google Sheets: @{twitterUsername} - {suiWalletAddress}");
+        }
+        else
+        {
+            LogError("GoogleSheetsLogger not found in scene - user data not saved");
+        }
+    }
 
     // Method to log scores to Google Sheets
     public void LogScoreToDatabase(int score, int level = 1)

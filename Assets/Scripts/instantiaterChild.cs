@@ -28,7 +28,12 @@ public class instantiaterChild : MonoBehaviour
     public void Update()
     {
         HandleInput();
-        DrawAimLine();
+        
+        // Only draw aim line if LineRenderer still exists
+        if (lineRenderer != null)
+        {
+            DrawAimLine();
+        }
     }
 
     private void HandleInput()
@@ -125,6 +130,10 @@ public class instantiaterChild : MonoBehaviour
 
     private void DrawAimLine()
     {
+        // Check if LineRenderer still exists (it might be destroyed by Ball.cs)
+        if (lineRenderer == null)
+            return;
+            
         Ray ray = new Ray(transform.position, Vector3.down);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, Mathf.Infinity))

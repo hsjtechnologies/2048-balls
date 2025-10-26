@@ -115,13 +115,21 @@ public class Instantiater : MonoBehaviour
         else if (GM.shrinkBallSizes < 0)
             ball.transform.localScale *= -GM.shrinkBallSizes;*/
         ball.name = GM.balls[index].name;
-        ball.GetComponent<Rigidbody>().isKinematic = true;
+        
+        // Set up rigidbody for kinematic mode
+        Rigidbody ballRb = ball.GetComponent<Rigidbody>();
+        
+        // Set collision detection mode first, then kinematic
+        // This reduces the warning (Unity auto-adjusts collision detection for kinematic bodies)
+        ballRb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        ballRb.isKinematic = true;
+        ballRb.interpolation = RigidbodyInterpolation.None;
+        
         ball.transform.parent = this.transform;
         ball.AddComponent<instantiaterChild>();
         ball.GetComponent<instantiaterChild>().instantiater = this;
         ball.GetComponent<TrailRenderer>().startWidth = ball.transform.localScale.x;
         ball.GetComponent<TrailRenderer>().endWidth = (ball.transform.localScale.x / 2f);
-        ball.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.None;
         holdsBall = true;
     }
 }

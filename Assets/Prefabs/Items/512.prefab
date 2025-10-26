@@ -33,15 +33,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5958848402918016659, guid: 5f5495efcfb686d48b70f81fc77b9f74, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.17
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5958848402918016659, guid: 5f5495efcfb686d48b70f81fc77b9f74, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.17
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5958848402918016659, guid: 5f5495efcfb686d48b70f81fc77b9f74, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.17
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5958848402918016659, guid: 5f5495efcfb686d48b70f81fc77b9f74, type: 3}
       propertyPath: m_LocalPosition.x
@@ -53,7 +53,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5958848402918016659, guid: 5f5495efcfb686d48b70f81fc77b9f74, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.05
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5958848402918016659, guid: 5f5495efcfb686d48b70f81fc77b9f74, type: 3}
       propertyPath: m_LocalRotation.w
@@ -91,7 +91,9 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5958848402918016656, guid: 5f5495efcfb686d48b70f81fc77b9f74, type: 3}
+    - {fileID: 109192907589658806, guid: 5f5495efcfb686d48b70f81fc77b9f74, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 5f5495efcfb686d48b70f81fc77b9f74, type: 3}
 --- !u!1 &6413180764033978235 stripped
 GameObject:
@@ -107,6 +109,20 @@ MeshCollider:
   m_GameObject: {fileID: 6413180764033978235}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 9036181148622177254, guid: cfb54a9ebc77e2f4c9991998b4461a68, type: 3}
+--- !u!64 &6280134344728452641
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6413180764033978235}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
   m_Convex: 1
