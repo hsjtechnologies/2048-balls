@@ -20,7 +20,7 @@ public class TwitterOAuth : MonoBehaviour
 
     [Header("Backend Configuration")]
     public string backendURL = "https://ball-game-hlvu.onrender.com";
-    public string gameURL = "https://ball-game-lilac.vercel.app"; // The actual Unity WebGL game URL
+    public string gameURL = "https://ball-game-235m.vercel.app/";
     public bool debugMode = true;
     [Tooltip("If true, creates a minimal UI at runtime when references are missing.")]
     public bool autoCreateUIIfMissing = false;
@@ -222,14 +222,12 @@ public class TwitterOAuth : MonoBehaviour
 
     private void CheckExistingLogin()
     {
-        // Check if user was previously logged in
+        // Check if user was previously logged in (only check username now)
         string savedUsername = PlayerPrefs.GetString("twitter_username", "");
-        string savedWallet = PlayerPrefs.GetString("sui_wallet", "");
         
-        if (!string.IsNullOrEmpty(savedUsername) && !string.IsNullOrEmpty(savedWallet))
+        if (!string.IsNullOrEmpty(savedUsername))
         {
             twitterUsername = savedUsername;
-            suiWalletAddress = savedWallet;
             CompleteLogin();
         }
     }
@@ -243,11 +241,20 @@ public class TwitterOAuth : MonoBehaviour
         string authUrl = $"{backendURL}/auth/twitter";
         LogDebug($"Opening Twitter OAuth: {authUrl}");
 
+        try
+        {
 #if UNITY_WEBGL && !UNITY_EDITOR
-        OpenURL(authUrl);
+            OpenURL(authUrl);
 #else
-        Application.OpenURL(authUrl);
+            Application.OpenURL(authUrl);
 #endif
+        }
+        catch (System.Exception e)
+        {
+            LogError($"Failed to open URL: {e.Message}");
+            UpdateStatusText("Failed to open login page. Please try again.");
+            return;
+        }
 
         // Start listening for callback
         StartCoroutine(ListenForOAuthCallback());
@@ -269,6 +276,15 @@ public class TwitterOAuth : MonoBehaviour
         UpdateStatusText("Test login successful! Please enter your Sui wallet address.");
     }
 
+    // Quick test method to verify login flow and timescale
+    [ContextMenu("Test Complete Login Flow")]
+    public void TestCompleteLoginFlow()
+    {
+        LogDebug("Testing complete login flow");
+        twitterUsername = "test_user";
+        CompleteLogin();
+    }
+
     public void LoginButton()
     {   
         // Just call the login button click - don't force wallet panel
@@ -279,6 +295,7 @@ public class TwitterOAuth : MonoBehaviour
 
     private IEnumerator ListenForOAuthCallback()
     {
+        LogDebug("=== STARTING OAUTH CALLBACK LISTENER ===");
         LogDebug("Waiting for Twitter login callback...");
         UpdateStatusText("Waiting for Twitter login...");
         
@@ -294,32 +311,20 @@ public class TwitterOAuth : MonoBehaviour
             // Check for callback parameters in the URL
             if (url.Contains("twitter=success"))
             {
-                LogDebug("OAuth callback detected!");
+                LogDebug("=== OAUTH CALLBACK DETECTED ===");
+                LogDebug($"Full callback URL: {url}");
                 UpdateStatusText("Login successful! Processing...");
                 
                 // Extract username and token from URL parameters
                 ExtractOAuthData(url);
                 
-                // Show wallet input panel
-                ShowWalletPanel();
+                LogDebug($"Extracted username: {twitterUsername}");
+                LogDebug($"Extracted token length: {accessToken.Length}");
+                
+                // Handle post-login flow
+                HandlePostLoginFlow();
                 yield break;
             }
-
-            // Also check for URL parameters in WebGL (alternative method)
-            #if UNITY_WEBGL && !UNITY_EDITOR
-            if (CheckWebGLURLParameters())
-            {
-                LogDebug("OAuth callback detected via WebGL method!");
-                UpdateStatusText("Login successful! Processing...");
-                
-                // Extract from current URL
-                ExtractOAuthData(Application.absoluteURL);
-                
-                // Show wallet input panel
-                ShowWalletPanel();
-                yield break;
-            }
-            #endif
             
             elapsedTime += Time.deltaTime;
             yield return new WaitForSeconds(1f);
@@ -329,24 +334,6 @@ public class TwitterOAuth : MonoBehaviour
         UpdateStatusText("Login timeout. Please try again.");
     }
 
-    #if UNITY_WEBGL && !UNITY_EDITOR
-    [System.Runtime.InteropServices.DllImport("__Internal")]
-    private static extern string GetURLParameters();
-    
-    private bool CheckWebGLURLParameters()
-    {
-        try
-        {
-            string paramsStr = GetURLParameters();
-            LogDebug($"WebGL URL parameters: {paramsStr}");
-            return paramsStr.Contains("twitter=success");
-        }
-        catch
-        {
-            return false;
-        }
-    }
-#endif
 
     private void ExtractOAuthData(string url)
     {
@@ -379,6 +366,20 @@ public class TwitterOAuth : MonoBehaviour
         // Update UI
         if (usernameText != null)
             usernameText.text = $"Welcome, @{twitterUsername}!";
+    }
+
+    /// <summary>
+    /// Handle what happens after successful Twitter login
+    /// MODIFY THIS METHOD TO CHANGE THE POST-LOGIN FLOW
+    /// </summary>
+    private void HandlePostLoginFlow()
+    {
+        LogDebug("Handling post-login flow...");
+        
+        // Skip wallet input, go directly to game
+        CompleteLogin();
+        
+        LogDebug("Post-login flow completed");
     }
 
     // Public helper to force show wallet panel (e.g., if callback is blocked)
@@ -464,13 +465,14 @@ public class TwitterOAuth : MonoBehaviour
         LogDebug($"Time.timeScale is now: {Time.timeScale}");
         
         // Update UI
-        UpdateStatusText($"Welcome! Game ready. Wallet: {suiWalletAddress.Substring(0, 10)}...");
+        UpdateStatusText($"Welcome @{twitterUsername}! Game ready to play!");
         ShowGamePanel();
         
         LogDebug("Calling OnLoginCompleted event");
-        // Notify other systems
-        OnLoginCompleted?.Invoke(twitterUsername, suiWalletAddress);
+        // Notify other systems (pass empty wallet address since we're not using it)
+        OnLoginCompleted?.Invoke(twitterUsername, "");
         
+        LogDebug($"OnLoginCompleted event invoked with username: {twitterUsername}");
         LogDebug("CompleteLogin finished successfully");
     }
 
@@ -478,9 +480,8 @@ public class TwitterOAuth : MonoBehaviour
     {
         LogDebug("Logout clicked");
         
-        // Clear saved data
+        // Clear saved data (only username now)
         PlayerPrefs.DeleteKey("twitter_username");
-        PlayerPrefs.DeleteKey("sui_wallet");
         PlayerPrefs.Save();
         
         // Reset game state
@@ -491,10 +492,6 @@ public class TwitterOAuth : MonoBehaviour
         // Reset variables
         twitterUsername = "";
         accessToken = "";
-        suiWalletAddress = "";
-        
-        if (walletAddressInput != null)
-            walletAddressInput.text = "";
         
         // Reset UI
         ShowLoginPanel();
@@ -564,6 +561,29 @@ public class TwitterOAuth : MonoBehaviour
     private void LogError(string message)
     {
         Debug.LogError($"[TwitterOAuth] {message}");
+    }
+
+    // Public method to be called from JavaScript after OAuth callback
+    public void OnOAuthCallback(string url)
+    {
+        LogDebug($"OAuth callback received: {url}");
+        
+        if (url.Contains("twitter=success"))
+        {
+            LogDebug("OAuth callback detected!");
+            UpdateStatusText("Login successful! Processing...");
+            
+            // Extract username and token from URL parameters
+            ExtractOAuthData(url);
+            
+            // Handle post-login flow
+            HandlePostLoginFlow();
+        }
+        else
+        {
+            LogError("Invalid OAuth callback URL");
+            UpdateStatusText("Login failed. Please try again.");
+        }
     }
 
     // Public events for other systems to listen to
