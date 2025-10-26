@@ -507,6 +507,10 @@ public class TwitterOAuth : MonoBehaviour
         LogDebug($"GameManager.IsLoggedIn is now: {GameManager.IsLoggedIn}");
         LogDebug($"Time.timeScale is now: {Time.timeScale}");
         
+        // Force update timescale to ensure it's properly set
+        Time.timeScale = 1f;
+        LogDebug($"Time.timeScale forced to: {Time.timeScale}");
+        
         // Disable the Menu GameObject after successful login
         if (menuGameObject != null)
         {
