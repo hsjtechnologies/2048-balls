@@ -62,24 +62,52 @@ app.get("/auth/twitter/callback", async (req, res) => {
     console.log("🔑 Using credentials:", credentials.substring(0, 10) + "...");
 
     // Add a small delay to prevent rate limiting during testing
-    console.log("⏳ Waiting 2 seconds to prevent rate limiting...");
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    console.log("⏳ Waiting 5 seconds to prevent rate limiting...");
+    await new Promise(resolve => setTimeout(resolve, 5000));
 
-    const tokenResponse = await axios.post(
-      "https://api.twitter.com/2/oauth2/token",
-      querystring.stringify({
-        code: code,
-        grant_type: "authorization_code",
-        redirect_uri: REDIRECT_URI,
-        code_verifier: CODE_VERIFIER
-      }),
-      {
-        headers: {
-          "Authorization": `Basic ${credentials}`,
-          "Content-Type": "application/x-www-form-urlencoded"
+    let tokenResponse;
+    try {
+      tokenResponse = await axios.post(
+        "https://api.twitter.com/2/oauth2/token",
+        querystring.stringify({
+          code: code,
+          grant_type: "authorization_code",
+          redirect_uri: REDIRECT_URI,
+          code_verifier: CODE_VERIFIER
+        }),
+        {
+          headers: {
+            "Authorization": `Basic ${credentials}`,
+            "Content-Type": "application/x-www-form-urlencoded"
+          }
         }
+      );
+    } catch (tokenError) {
+      if (tokenError.response?.status === 429) {
+        console.error("⚠️ Rate limited by Twitter API");
+        console.error("⏳ Retrying after 10 seconds...");
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        
+        // Retry once
+        tokenResponse = await axios.post(
+          "https://api.twitter.com/2/oauth2/token",
+          querystring.stringify({
+            code: code,
+            grant_type: "authorization_code",
+            redirect_uri: REDIRECT_URI,
+            code_verifier: CODE_VERIFIER
+          }),
+          {
+            headers: {
+              "Authorization": `Basic ${credentials}`,
+              "Content-Type": "application/x-www-form-urlencoded"
+            }
+          }
+        );
+      } else {
+        throw tokenError;
       }
-    );
+    }
 
     console.log("✅ Access token:", tokenResponse.data);
     
