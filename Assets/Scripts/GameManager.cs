@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public static bool IsLoggedIn = false; //tracks login status
     public GameObject[] balls;
     public GameObject menuGameObject; // Reference to the Menu GameObject to disable after login
+    public GameObject gameOverGameObject; // Reference to the Game Over GameObject to enable when game ends
     private bool gameOver = false;
     [SerializeField]
     private float score = 0;
@@ -157,7 +158,17 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.DeleteAll();
         gameOver = true;
         StartCoroutine(darkenBalls());
-        //Open game over screen
+        
+        // Enable the Game Over GameObject
+        if (gameOverGameObject != null)
+        {
+            gameOverGameObject.SetActive(true);
+            Debug.Log("Game Over UI enabled");
+        }
+        else
+        {
+            Debug.LogWarning("Game Over GameObject not assigned in GameManager");
+        }
     }
 
     private void LogFinalScore()
@@ -243,6 +254,48 @@ public class GameManager : MonoBehaviour
         
         // You can add cleanup logic here
         // For example, save current progress, reset game state, etc.
+    }
+
+    public void RestartGame()
+    {
+        Debug.Log("Restarting game...");
+        
+        // Reset game state
+        gameOver = false;
+        score = 0;
+        level = 1;
+        remainingForNextLevel = 25;
+        howmany2048 = 0;
+        
+        // Clear all PlayerPrefs
+        PlayerPrefs.DeleteAll();
+        
+        // Reset UI elements
+        if (scoreText != null)
+            scoreText.text = remainingForNextLevel.ToString();
+        if (LevelText != null)
+            LevelText.text = level.ToString();
+        if (NextLevelText != null)
+            NextLevelText.text = (level + 1).ToString();
+        if (scoreSlider != null)
+        {
+            scoreSlider.maxValue = remainingForNextLevel;
+            scoreSlider.value = 0;
+        }
+        if (howmany2048Text != null)
+            howmany2048Text.text = "0";
+        
+        // Disable game over UI
+        if (gameOverGameObject != null)
+        {
+            gameOverGameObject.SetActive(false);
+            Debug.Log("Game Over UI disabled");
+        }
+        
+        // Restart the scene
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        
+        Debug.Log("Game restarted successfully");
     }
 
     private void OnDestroy()
