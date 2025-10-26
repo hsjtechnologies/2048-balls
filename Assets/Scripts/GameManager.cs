@@ -45,8 +45,8 @@ public class GameManager : MonoBehaviour
         TwitterOAuth.OnLogoutCompleted += OnUserLoggedOut;
         
         // TEMPORARY: Bypass login for testing prefab spawning
-        // IsLoggedIn = true;
-        // Time.timeScale = 1f;
+        IsLoggedIn = true;
+        Time.timeScale = 1f;
         // Debug.Log("BYPASSED LOGIN FOR TESTING - Prefabs should now spawn");
         
         // Check if user was already logged in from a previous session
