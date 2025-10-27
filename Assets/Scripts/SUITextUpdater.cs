@@ -13,6 +13,7 @@ public class SUITextUpdater : MonoBehaviour
     [Header("Submit Actions")]
     [SerializeField] private GameObject[] gameObjectsToDisable; // GameObjects to disable after submit
     [SerializeField] private float disableDelay = 0f; // Delay before disabling (in seconds)
+    [SerializeField] private bool completeGameLogin = true; // Call GameManager.CompleteSUILogin() after submit
     
     [Header("Text Formatting")]
     [SerializeField] private string prefix = "Wallet: ";
@@ -106,6 +107,12 @@ public class SUITextUpdater : MonoBehaviour
         
         UpdateText();
         
+        // Complete game login if enabled
+        if (completeGameLogin)
+        {
+            CompleteGameLogin();
+        }
+        
         // Disable GameObjects after successful submission
         DisableGameObjectsAfterSubmit();
     }
@@ -182,6 +189,21 @@ public class SUITextUpdater : MonoBehaviour
                 obj.SetActive(false);
                 Debug.Log($"GameObject disabled after submit: {obj.name}");
             }
+        }
+    }
+    
+    private void CompleteGameLogin()
+    {
+        // Find GameManager and call CompleteSUILogin
+        GameManager gameManager = FindObjectOfType<GameManager>();
+        if (gameManager != null)
+        {
+            gameManager.CompleteSUILogin();
+            Debug.Log("GameManager.CompleteSUILogin() called - game should now start");
+        }
+        else
+        {
+            Debug.LogWarning("GameManager not found - cannot complete login process");
         }
     }
     

@@ -62,9 +62,10 @@ public class GameManager : MonoBehaviour
         if (!string.IsNullOrEmpty(savedUsername) || hasOAuthCallback)
         {
             IsLoggedIn = true;
-            Time.timeScale = 1f;
+            Time.timeScale = 0f; // Keep game paused until SUI is entered
             string username = hasOAuthCallback ? "OAuth callback detected" : savedUsername;
             Debug.Log($"Game started - user was already logged in: {username}");
+            Debug.Log("Game paused - waiting for SUI wallet address");
             
             // Disable the Menu GameObject since user is already logged in
             if (menuGameObject != null)
@@ -77,7 +78,7 @@ public class GameManager : MonoBehaviour
             if (suiGameObject != null)
             {
                 suiGameObject.SetActive(true);
-                Debug.Log("SUI GameObject enabled - user already logged in");
+                Debug.Log("SUI GameObject enabled - user already logged in, waiting for wallet address");
             }
         }
         // Check login status
@@ -238,11 +239,11 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log($"User logged in: @{twitterUsername} with wallet: {walletAddress}");
         
-        // Ensure game state is properly set
+        // Set login status but keep timescale at 0f until SUI is entered
         IsLoggedIn = true;
-        Time.timeScale = 1f;
+        Time.timeScale = 0f; // Keep game paused until SUI wallet is entered
         
-        Debug.Log($"GameManager: Login confirmed - Time.timeScale set to {Time.timeScale}");
+        Debug.Log($"GameManager: Twitter login confirmed - Time.timeScale kept at {Time.timeScale}");
         Debug.Log($"GameManager: IsLoggedIn is now {IsLoggedIn}");
         
         // Disable the Menu GameObject after successful login (safety check)
@@ -256,7 +257,7 @@ public class GameManager : MonoBehaviour
         if (suiGameObject != null)
         {
             suiGameObject.SetActive(true);
-            Debug.Log("SUI GameObject enabled after successful login");
+            Debug.Log("SUI GameObject enabled after successful login - waiting for wallet address");
         }
         else
         {
@@ -265,6 +266,22 @@ public class GameManager : MonoBehaviour
         
         // You can add additional game initialization here
         // For example, load user-specific data, achievements, etc.
+    }
+    
+    // Public method to complete login after SUI wallet is entered
+    public void CompleteSUILogin()
+    {
+        Debug.Log("SUI wallet address entered - completing login process");
+        
+        // Now set timescale to 1f to start the game
+        Time.timeScale = 1f;
+        IsLoggedIn = true;
+        
+        Debug.Log($"GameManager: SUI login completed - Time.timeScale set to {Time.timeScale}");
+        Debug.Log($"GameManager: Game is now ready to play");
+        
+        // You can add additional game start logic here
+        // For example, start spawning balls, enable game mechanics, etc.
     }
 
     private void OnUserLoggedOut()
