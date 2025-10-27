@@ -122,6 +122,8 @@ GameObject:
   - component: {fileID: 5893700635704550972}
   - component: {fileID: 807136553}
   - component: {fileID: 8776141169205126097}
+  - component: {fileID: 358528761929046606}
+  - component: {fileID: 5210349424860261525}
   m_Layer: 0
   m_Name: 4096
   m_TagString: Ball
@@ -138,7 +140,7 @@ Transform:
   m_GameObject: {fileID: 7865715207141036289}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_Children:
   - {fileID: 3511635592126809801}
   - {fileID: 7579672202726143145}
@@ -159,7 +161,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 0
+  m_Constraints: 120
   m_CollisionDetection: 1
 --- !u!114 &8776141169205126097
 MonoBehaviour:
@@ -176,6 +178,34 @@ MonoBehaviour:
   isLocked: 0
   leftLimit: 0
   rightLimit: 0
+--- !u!136 &358528761929046606
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7865715207141036289}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.13594025
+  m_Height: 0.695135
+  m_Direction: 0
+  m_Center: {x: 0.027346825, y: 0.0064993543, z: 0}
+--- !u!136 &5210349424860261525
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7865715207141036289}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.13594025
+  m_Height: 0.695135
+  m_Direction: 0
+  m_Center: {x: 0.027346825, y: 0.0064993543, z: 0}
 --- !u!1001 &6570216498375308409
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -33,15 +33,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5958848402918016659, guid: 5f5495efcfb686d48b70f81fc77b9f74, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.5
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 5958848402918016659, guid: 5f5495efcfb686d48b70f81fc77b9f74, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.5
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 5958848402918016659, guid: 5f5495efcfb686d48b70f81fc77b9f74, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.5
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 5958848402918016659, guid: 5f5495efcfb686d48b70f81fc77b9f74, type: 3}
       propertyPath: m_LocalPosition.x
@@ -93,7 +93,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5958848402918016687, guid: 5f5495efcfb686d48b70f81fc77b9f74, type: 3}
       propertyPath: m_Constraints
-      value: 0
+      value: 120
       objectReference: {fileID: 0}
     - target: {fileID: 5958848404576143085, guid: 5f5495efcfb686d48b70f81fc77b9f74, type: 3}
       propertyPath: m_IsActive
@@ -117,7 +117,7 @@ MeshCollider:
   m_GameObject: {fileID: 6413180764033978235}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
@@ -131,8 +131,36 @@ MeshCollider:
   m_GameObject: {fileID: 6413180764033978235}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 9036181148622177254, guid: cfb54a9ebc77e2f4c9991998b4461a68, type: 3}
+--- !u!136 &6773572894479990175
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6413180764033978235}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 1.2735387
+  m_Height: 3.6893392
+  m_Direction: 0
+  m_Center: {x: -1.2728903, y: 0.14609903, z: 0}
+--- !u!136 &9147961891009852846
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6413180764033978235}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 1.2735387
+  m_Height: 3.6893392
+  m_Direction: 0
+  m_Center: {x: -1.2728903, y: 0.14609903, z: 0}

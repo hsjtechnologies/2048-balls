@@ -83,7 +83,7 @@ public class GameManager : MonoBehaviour
         // Check login status
         else if (!IsLoggedIn)
         {
-            Time.timeScale = 0f; // Pause all physics & updates
+            Time.timeScale = 1f; // Pause all physics & updates
             Debug.Log("Game paused - waiting for user login");
             
             // Make sure SUI GameObject is disabled when not logged in

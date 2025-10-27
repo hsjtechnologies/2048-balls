@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 7596088246453273171}
   - component: {fileID: 2482905006039650889}
   - component: {fileID: 5272994098836974752}
+  - component: {fileID: 5074111095769270968}
+  - component: {fileID: 8037880043428580219}
   m_Layer: 0
   m_Name: 2048
   m_TagString: Ball
@@ -27,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 2636008955698162391}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_Children:
   - {fileID: 2007562412069285401}
   m_Father: {fileID: 0}
@@ -47,7 +49,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 0
+  m_Constraints: 120
   m_CollisionDetection: 1
 --- !u!114 &5272994098836974752
 MonoBehaviour:
@@ -64,6 +66,34 @@ MonoBehaviour:
   isLocked: 0
   leftLimit: 0
   rightLimit: 0
+--- !u!136 &5074111095769270968
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2636008955698162391}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.18323687
+  m_Height: 1.0284759
+  m_Direction: 0
+  m_Center: {x: 0.09104808, y: 0.031005863, z: 0}
+--- !u!136 &8037880043428580219
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2636008955698162391}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.18323687
+  m_Height: 1.0284759
+  m_Direction: 0
+  m_Center: {x: 0.09104808, y: 0.031005863, z: 0}
 --- !u!1001 &8091147257582492841
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -89,19 +119,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7752327662374515376, guid: d9d91257e6d93674ba34488ab09819a0, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.18
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 7752327662374515376, guid: d9d91257e6d93674ba34488ab09819a0, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.18
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 7752327662374515376, guid: d9d91257e6d93674ba34488ab09819a0, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.18
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 7752327662374515376, guid: d9d91257e6d93674ba34488ab09819a0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.004
+      value: 2.871
       objectReference: {fileID: 0}
     - target: {fileID: 7752327662374515376, guid: d9d91257e6d93674ba34488ab09819a0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -176,7 +206,7 @@ MeshCollider:
   m_GameObject: {fileID: 2007562412069285412}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
@@ -190,7 +220,7 @@ MeshCollider:
   m_GameObject: {fileID: 2007562412069285412}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30

@@ -28,8 +28,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1694429524932314250}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.417, y: -0.107999995, z: 0}
-  m_LocalScale: {x: 0.17, y: 0.17, z: 0.17}
+  m_LocalPosition: {x: 0.676, y: -0.173, z: 0}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_Children: []
   m_Father: {fileID: 1953552081285487810}
   m_RootOrder: 1
@@ -92,7 +92,7 @@ MeshCollider:
   m_GameObject: {fileID: 1694429524932314250}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
@@ -106,7 +106,7 @@ MeshCollider:
   m_GameObject: {fileID: 1694429524932314250}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
@@ -122,6 +122,8 @@ GameObject:
   - component: {fileID: 1953552081285487810}
   - component: {fileID: 1871357924}
   - component: {fileID: 7625981444391781048}
+  - component: {fileID: 3407205237441231566}
+  - component: {fileID: 4112475383936328620}
   m_Layer: 0
   m_Name: 256
   m_TagString: Ball
@@ -138,7 +140,7 @@ Transform:
   m_GameObject: {fileID: 3420753967621979322}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 6553460180469281780}
   - {fileID: 1344402378370482508}
@@ -159,7 +161,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 0
+  m_Constraints: 120
   m_CollisionDetection: 1
 --- !u!114 &7625981444391781048
 MonoBehaviour:
@@ -176,6 +178,34 @@ MonoBehaviour:
   isLocked: 0
   leftLimit: 0
   rightLimit: 0
+--- !u!136 &3407205237441231566
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3420753967621979322}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.33516008
+  m_Height: 1.0012338
+  m_Direction: 0
+  m_Center: {x: -0.027505755, y: 0.0927968, z: 0}
+--- !u!136 &4112475383936328620
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3420753967621979322}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.33516008
+  m_Height: 1.0012338
+  m_Direction: 0
+  m_Center: {x: -0.027505755, y: 0.0927968, z: 0}
 --- !u!1001 &3559916974530986308
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -201,15 +231,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7752327662374515376, guid: f54e0dd18f7d6674eb5bb038dad555c0, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.17
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 7752327662374515376, guid: f54e0dd18f7d6674eb5bb038dad555c0, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.17
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 7752327662374515376, guid: f54e0dd18f7d6674eb5bb038dad555c0, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.17
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 7752327662374515376, guid: f54e0dd18f7d6674eb5bb038dad555c0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -288,7 +318,7 @@ MeshCollider:
   m_GameObject: {fileID: 6553460180469281737}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
@@ -302,7 +332,7 @@ MeshCollider:
   m_GameObject: {fileID: 6553460180469281737}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30

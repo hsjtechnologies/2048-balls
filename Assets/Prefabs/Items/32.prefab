@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 1736513934337144007}
   - component: {fileID: 1976714148}
   - component: {fileID: 2700847891778506620}
+  - component: {fileID: 2536629594034871873}
+  - component: {fileID: 3586881251784263897}
   m_Layer: 0
   m_Name: 32
   m_TagString: Ball
@@ -27,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 3820689996543027698}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3.5, y: 3.5, z: 3.5}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 8653249226679856559}
   m_Father: {fileID: 0}
@@ -47,7 +49,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 0
+  m_Constraints: 120
   m_CollisionDetection: 1
 --- !u!114 &2700847891778506620
 MonoBehaviour:
@@ -64,6 +66,34 @@ MonoBehaviour:
   isLocked: 0
   leftLimit: 0
   rightLimit: 0
+--- !u!136 &2536629594034871873
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3820689996543027698}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.15051232
+  m_Height: 0.4181014
+  m_Direction: 0
+  m_Center: {x: -0.0038581237, y: -0.010839808, z: 0}
+--- !u!136 &3586881251784263897
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3820689996543027698}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.15051232
+  m_Height: 0.4181014
+  m_Direction: 0
+  m_Center: {x: -0.0038581237, y: -0.010839808, z: 0}
 --- !u!1001 &5406985462291055992
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -168,7 +198,7 @@ MeshCollider:
   m_GameObject: {fileID: 8653249226679856552}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
@@ -182,7 +212,7 @@ MeshCollider:
   m_GameObject: {fileID: 8653249226679856552}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30

@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3515325936443762402}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.505, y: 0.18, z: 0}
+  m_LocalPosition: {x: -1.48, y: -0.33, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children: []
   m_Father: {fileID: 8603700480622548764}
@@ -124,6 +124,8 @@ GameObject:
   - component: {fileID: 4934238772146080233}
   - component: {fileID: 6600321481698270207}
   - component: {fileID: 8637747832728903487}
+  - component: {fileID: 4596914824073168455}
+  - component: {fileID: 8128393698040058405}
   m_Layer: 0
   m_Name: 4
   m_TagString: Ball
@@ -139,8 +141,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6802763909135163717}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalPosition: {x: 0, y: 0.05, z: 0}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children:
   - {fileID: 5480544080927792795}
   - {fileID: 7077251286242733961}
@@ -161,7 +163,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 0
+  m_Constraints: 120
   m_CollisionDetection: 1
 --- !u!114 &4934238772146080233
 MonoBehaviour:
@@ -383,6 +385,34 @@ TrailRenderer:
   m_MinVertexDistance: 0
   m_Autodestruct: 0
   m_Emitting: 1
+--- !u!136 &4596914824073168455
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6802763909135163717}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.2845096
+  m_Height: 0.68356264
+  m_Direction: 1
+  m_Center: {x: 0.106652476, y: 0.060597856, z: 0.1666667}
+--- !u!136 &8128393698040058405
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6802763909135163717}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.2845096
+  m_Height: 0.68356264
+  m_Direction: 1
+  m_Center: {x: 0.106652476, y: 0.060597856, z: 0.1666667}
 --- !u!1001 &4941760850703461564
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -412,11 +442,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 619918409442701863, guid: c949443f6b3e7d74694adedeb2b9e5d5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.5
+      value: -1.48
       objectReference: {fileID: 0}
     - target: {fileID: 619918409442701863, guid: c949443f6b3e7d74694adedeb2b9e5d5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.2
+      value: -0.33
       objectReference: {fileID: 0}
     - target: {fileID: 619918409442701863, guid: c949443f6b3e7d74694adedeb2b9e5d5, type: 3}
       propertyPath: m_LocalPosition.z
