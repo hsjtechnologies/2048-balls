@@ -11,8 +11,6 @@ GameObject:
   - component: {fileID: 7765479809176240036}
   - component: {fileID: 295682544}
   - component: {fileID: 8755705082052133092}
-  - component: {fileID: 3829869262182689903}
-  - component: {fileID: 1474248460402482029}
   m_Layer: 0
   m_Name: 128
   m_TagString: Ball
@@ -43,13 +41,13 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4329083328471201913}
   serializedVersion: 2
-  m_Mass: 3
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 120
+  m_Constraints: 0
   m_CollisionDetection: 1
 --- !u!114 &8755705082052133092
 MonoBehaviour:
@@ -66,34 +64,6 @@ MonoBehaviour:
   isLocked: 0
   leftLimit: 0
   rightLimit: 0
---- !u!136 &3829869262182689903
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4329083328471201913}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.15758593
-  m_Height: 0.57108533
-  m_Direction: 1
-  m_Center: {x: 0.12155446, y: -0.25582513, z: 0}
---- !u!136 &1474248460402482029
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4329083328471201913}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  m_Radius: 0.15758593
-  m_Height: 0.57108533
-  m_Direction: 1
-  m_Center: {x: 0.12155446, y: -0.25582513, z: 0}
 --- !u!1001 &6263982916897434003
 PrefabInstance:
   m_ObjectHideFlags: 0

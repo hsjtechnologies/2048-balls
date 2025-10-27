@@ -17,11 +17,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3175762092084607105, guid: 4e90b12dcb9c0494590fb90cc4a4cdae, type: 3}
       propertyPath: m_Mass
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3175762092084607105, guid: 4e90b12dcb9c0494590fb90cc4a4cdae, type: 3}
       propertyPath: m_Constraints
-      value: 120
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3175762092084607164, guid: 4e90b12dcb9c0494590fb90cc4a4cdae, type: 3}
       propertyPath: m_Mesh

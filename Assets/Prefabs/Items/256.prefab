@@ -122,8 +122,6 @@ GameObject:
   - component: {fileID: 1953552081285487810}
   - component: {fileID: 1871357924}
   - component: {fileID: 7625981444391781048}
-  - component: {fileID: 3076979854852642057}
-  - component: {fileID: 598710081220293959}
   m_Layer: 0
   m_Name: 256
   m_TagString: Ball
@@ -178,34 +176,6 @@ MonoBehaviour:
   isLocked: 0
   leftLimit: 0
   rightLimit: 0
---- !u!136 &3076979854852642057
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3420753967621979322}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.21581121
-  m_Height: 0.79249877
-  m_Direction: 0
-  m_Center: {x: -0.09769063, y: 0.056525588, z: 0}
---- !u!136 &598710081220293959
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3420753967621979322}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  m_Radius: 0.21581121
-  m_Height: 0.79249877
-  m_Direction: 0
-  m_Center: {x: -0.09769063, y: 0.056525588, z: 0}
 --- !u!1001 &3559916974530986308
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -318,7 +288,7 @@ MeshCollider:
   m_GameObject: {fileID: 6553460180469281737}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
@@ -332,7 +302,7 @@ MeshCollider:
   m_GameObject: {fileID: 6553460180469281737}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30

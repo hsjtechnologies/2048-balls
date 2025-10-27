@@ -6,8 +6,8 @@ const crypto = require("crypto");
 const app = express();
 
 // TODO: Replace these values with your NEW Twitter app credentials
-const CLIENT_ID = "S1A3NkVGWVpTOTcyTzRLTjMzbmg6MTpjaQ";
-const CLIENT_SECRET = "sSwu5niZOz9tlrg9ctTEUHy9F9CP1ZjBOQSBcevNSZHX_k5MU2";
+const CLIENT_ID = "S1hDZFFqLUZrT0ZRZkNwcHBBNkY6MTpjaQ";
+const CLIENT_SECRET = "jzqERusGxUGPtDkmQGCjDGulpNmejn4sfMA8QjXPYIthMK15ky";
 const REDIRECT_URI = "https://ball-game-hlvu.onrender.com/auth/twitter/callback";
 
 // Validate credentials
@@ -102,7 +102,7 @@ app.get("/auth/twitter/callback", async (req, res) => {
     } catch (userError) {
       console.error("❌ Error getting user info:", userError.response?.data || userError.message);
       // Fallback: redirect with just token
-      res.redirect(`https://app.suihotdog.com?twitter=success&token=${accessToken}`);
+      res.redirect(`https://app.suihotdog.com?xtwitter=success&token=${accessToken}`);
     }
 
   } catch (error) {
