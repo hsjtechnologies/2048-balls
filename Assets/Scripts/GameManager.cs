@@ -220,22 +220,22 @@ public class GameManager : MonoBehaviour
         object[] obj = GameObject.FindSceneObjectsOfType(typeof (GameObject));
         foreach (object o in obj)
         {
-            GameObject g = (GameObject) o;
-            if (g.tag == "Ball")
-            {
-                // Change ball color to grey
-                MeshRenderer meshRenderer = g.gameObject.GetComponent<MeshRenderer>();
-                if (meshRenderer != null && meshRenderer.material != null)
-                {
-                    meshRenderer.material.color = Color.grey;
-                }
+            // GameObject g = (GameObject) o;
+            // if (g.tag == "Ball")
+            // {
+            //     // Change ball color to grey
+            //     MeshRenderer meshRenderer = g.gameObject.GetComponent<MeshRenderer>();
+            //     if (meshRenderer != null && meshRenderer.material != null)
+            //     {
+            //         meshRenderer.material.color = Color.grey;
+            //     }
                 
-                // Only disable first child if it exists
-                if (g.transform.childCount > 0)
-                {
-                    g.transform.GetChild(0).gameObject.SetActive(false);
-                }
-            }
+            //     // Only disable first child if it exists
+            //     if (g.transform.childCount > 0)
+            //     {
+            //         g.transform.GetChild(0).gameObject.SetActive(false);
+            //     }
+            // }
             yield return wait; //Pause the loop for 3 seconds.
         }
     }
