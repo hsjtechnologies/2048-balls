@@ -58,10 +58,9 @@ namespace PlayfabRequests
                     StatisticName = stat,
                     StartPosition = startPos,
                     MaxResultsCount = 100,
-                    // ProfileConstraints = new PlayerProfileViewConstraints {
-                    //     ShowDisplayName = true,
-                    //     ShowStatistics = true,
-                    // }
+                    ProfileConstraints = new PlayerProfileViewConstraints {
+                        ShowDisplayName = true,
+                    }
                 },
                 response =>
                 {

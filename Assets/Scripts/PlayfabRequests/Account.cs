@@ -70,6 +70,16 @@ namespace PlayfabRequests
                 },
                 response =>
                 {
+                    PlayFabClientAPI.UpdateUserTitleDisplayName
+                    (
+                        new UpdateUserTitleDisplayNameRequest
+                        {
+                            DisplayName = username
+                        },
+                        response => Debug.Log("USER TITLE DISPLAYNAME UPDATED"),
+                        error => Debug.LogWarning("ERROR UPDATING USER TITLE DISPLAY NAME: " + error.ErrorMessage)
+                    );
+
                     message = "New User Created + " + response.PlayFabId;
                     playfabId = response.PlayFabId;
                     Debug.Log(message);
