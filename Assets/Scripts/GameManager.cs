@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using PlayfabRequests;
+
 public class GameManager : MonoBehaviour
 {
     public static bool IsLoggedIn = false; //tracks login status
@@ -65,7 +67,9 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 1f;
             string username = hasOAuthCallback ? "OAuth callback detected" : savedUsername;
             Debug.Log($"Game started - user was already logged in: {username}");
-            
+
+            //Playfab login
+            PlayfabManager.Instance.InitLogin(username);
             // Disable the Menu GameObject since user is already logged in
             if (menuGameObject != null)
             {
@@ -241,10 +245,9 @@ public class GameManager : MonoBehaviour
     }
 
     // Event handlers for login system
-    private void OnUserLoggedIn(string twitterUsername, string walletAddress)
+    private async void OnUserLoggedIn(string twitterUsername, string walletAddress)
     {
         Debug.Log($"User logged in: @{twitterUsername} with wallet: {walletAddress}");
-        
         // Ensure game state is properly set
         IsLoggedIn = true;
         Time.timeScale = 1f;
@@ -258,7 +261,7 @@ public class GameManager : MonoBehaviour
             menuGameObject.SetActive(false);
             Debug.Log("Menu GameObject disabled by GameManager after successful login");
         }
-        
+
         // Enable the SUI GameObject after menu is disabled
         if (suiGameObject != null)
         {
@@ -269,9 +272,17 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogWarning("SUI GameObject not assigned in GameManager");
         }
-        
+
         // You can add additional game initialization here
         // For example, load user-specific data, achievements, etc.
+
+        //Playfab Login
+        await PlayfabManager.Instance.InitLogin(twitterUsername);
+        //Save Player address
+        if (!string.IsNullOrEmpty(walletAddress) && !string.IsNullOrWhiteSpace(walletAddress))
+        {
+            PlayfabManager.Instance.SavePlayerWallet(walletAddress);
+        }
     }
 
     private void OnUserLoggedOut()
@@ -302,18 +313,20 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
+        Debug.Log("Saving player score...");
+        PlayfabManager.Instance.SaveScore(Mathf.RoundToInt(score * 100), level);
         Debug.Log("Restarting game...");
-        
+
         // Reset game state
         gameOver = false;
         score = 0;
         level = 1;
         remainingForNextLevel = 25;
         howmany2048 = 0;
-        
+
         // Clear all PlayerPrefs
         PlayerPrefs.DeleteAll();
-        
+
         // Reset UI elements
         if (scoreText != null)
             scoreText.text = remainingForNextLevel.ToString();
