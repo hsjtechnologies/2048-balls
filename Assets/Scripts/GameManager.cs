@@ -7,6 +7,7 @@ using PlayfabRequests;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance { get; private set; }
     public static bool IsLoggedIn = false; //tracks login status
     public GameObject[] balls;
     public GameObject menuGameObject; // Reference to the Menu GameObject to disable after login
@@ -43,24 +44,37 @@ public class GameManager : MonoBehaviour
     public Slider scoreSlider;
     //public float shrinkBallSizes;
 
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     private void Start()
     {
         // Subscribe to login events from TwitterOAuth
         TwitterOAuth.OnLoginCompleted += OnUserLoggedIn;
         TwitterOAuth.OnLogoutCompleted += OnUserLoggedOut;
-        
+
         // TEMPORARY: Bypass login for testing prefab spawning
         // IsLoggedIn = true;
         // Time.timeScale = 1f; 
         // Debug.Log("BYPASSED LOGIN FOR TESTING - Prefabs should now spawn");
-        
+
         // Check if user was already logged in from a previous session
         string savedUsername = PlayerPrefs.GetString("twitter_username", "");
-        
+
         // Also check for OAuth callback in URL parameters
         string url = Application.absoluteURL;
         bool hasOAuthCallback = !string.IsNullOrEmpty(url) && url.Contains("twitter=success");
-        
+
         if (!string.IsNullOrEmpty(savedUsername) || hasOAuthCallback)
         {
             IsLoggedIn = true;
@@ -76,7 +90,7 @@ public class GameManager : MonoBehaviour
                 menuGameObject.SetActive(false);
                 Debug.Log("Menu GameObject disabled - user already logged in");
             }
-            
+
             // Enable the SUI GameObject since user is already logged in
             if (suiGameObject != null)
             {
@@ -89,13 +103,13 @@ public class GameManager : MonoBehaviour
         {
             Time.timeScale = 1f; // Pause all physics & updates
             Debug.Log("Game paused - waiting for user login");
-            
+
             // Make sure SUI GameObject is disabled when not logged in
-            if (suiGameObject != null)
-            {
-                suiGameObject.SetActive(false);
-                Debug.Log("SUI GameObject disabled - waiting for login");
-            }
+            // if (suiGameObject != null)
+            // {
+            //     suiGameObject.SetActive(false);
+            //     Debug.Log("SUI GameObject disabled - waiting for login");
+            // }
         }
         else
         {
@@ -103,9 +117,9 @@ public class GameManager : MonoBehaviour
             Debug.Log("Game started - user is logged in");
         }
 
-    //long.TryParse(balls[balls.Length - 1].gameObject.name, out toReach);
-    //toReach *= 2;
-    //shrinkSizes();
+        //long.TryParse(balls[balls.Length - 1].gameObject.name, out toReach);
+        //toReach *= 2;
+        //shrinkSizes();
 
         if (PlayerPrefs.GetInt("level") > 0)
         {
@@ -121,7 +135,7 @@ public class GameManager : MonoBehaviour
         scoreSlider.value = score;
         howmany2048Text.text = howmany2048.ToString();
         scoreText.text = (remainingForNextLevel - score).ToString();
-        
+
         // Display current score
         if (currentScoreText != null)
             currentScoreText.text = score.ToString();
@@ -167,7 +181,8 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.SetInt("level", level);
         }
         scoreSlider.value = score;
-        scoreText.text = (remainingForNextLevel - score).ToString();
+        // scoreText.text = (remainingForNextLevel - score).ToString();
+        scoreText.text = Mathf.RoundToInt(score + (level * 100)).ToString();
         
         // Update current score display
         if (currentScoreText != null)
@@ -180,15 +195,15 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         Debug.Log("GAME OVER");
-        
+
         // Log final score to database
         LogFinalScore();
-        
+
         Destroy(GameObject.Find("Instantiater"));
         PlayerPrefs.DeleteAll();
         gameOver = true;
         StartCoroutine(darkenBalls());
-        
+
         // Enable the Game Over GameObject
         if (gameOverGameObject != null)
         {
@@ -203,14 +218,19 @@ public class GameManager : MonoBehaviour
 
     private void LogFinalScore()
     {
+        int finalScore = Mathf.RoundToInt(score + (level * 100));
+        Debug.Log("Saving player score...");
+        PlayfabManager.Instance.SaveScore(finalScore, level);
         // Find SimpleSignInManager component to log score
+
         SimpleSignInManager signInManager = FindObjectOfType<SimpleSignInManager>();
         if (signInManager != null && signInManager.IsLoggedIn)
         {
             // Calculate final score (you can adjust this based on your scoring system)
-            int finalScore = Mathf.RoundToInt(score + (level * 100));
+
             signInManager.LogScoreToDatabase(finalScore, level);
             Debug.Log($"Final score logged: {finalScore}");
+
         }
         else
         {
@@ -279,10 +299,10 @@ public class GameManager : MonoBehaviour
         //Playfab Login
         await PlayfabManager.Instance.InitLogin(twitterUsername);
         //Save Player address
-        if (!string.IsNullOrEmpty(walletAddress) && !string.IsNullOrWhiteSpace(walletAddress))
-        {
-            PlayfabManager.Instance.SavePlayerWallet(walletAddress);
-        }
+        // if (!string.IsNullOrEmpty(walletAddress) && !string.IsNullOrWhiteSpace(walletAddress))
+        // {
+        //     PlayfabManager.Instance.SavePlayerWallet(walletAddress);
+        // }
     }
 
     private void OnUserLoggedOut()
@@ -313,8 +333,6 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
-        Debug.Log("Saving player score...");
-        PlayfabManager.Instance.SaveScore(Mathf.RoundToInt(score * 100), level);
         Debug.Log("Restarting game...");
 
         // Reset game state

@@ -2,6 +2,8 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
+using PlayfabRequests;
+using Core.DataModels;
 
 public class SUITextUpdater : MonoBehaviour
 {
@@ -48,7 +50,7 @@ public class SUITextUpdater : MonoBehaviour
         UpdateText();
     }
     
-    public void UpdateText()
+    public async void UpdateText()
     {
         if (targetText == null) return;
         
@@ -75,11 +77,18 @@ public class SUITextUpdater : MonoBehaviour
         {
             bool isValid = IsValidSuiAddress(inputValue);
             targetText.color = isValid ? validColor : invalidColor;
-            
+
             if (!isValid)
             {
                 targetText.text = prefix + inputValue + " (Invalid)" + suffix;
                 return;
+            }
+
+            var (loadState, message) = await PlayfabManager.Instance.SavePlayerWallet(inputValue);
+
+            if (loadState != LoaderEnum.Loaded)
+            {
+                PlayfabManager.Instance.PlayerSuiWalletAddr = inputValue;
             }
         }
         else
@@ -195,7 +204,7 @@ public class SUITextUpdater : MonoBehaviour
     private void CompleteGameLogin()
     {
         // Find GameManager and call CompleteSUILogin
-        GameManager gameManager = FindObjectOfType<GameManager>();
+        GameManager gameManager = GameManager.Instance;
         if (gameManager != null)
         {
             gameManager.CompleteSUILogin();

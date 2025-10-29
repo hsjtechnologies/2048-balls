@@ -28,7 +28,7 @@ public class GameplayRecord : MonoBehaviour
         SetRank(rank);
         _playerName.text = player;
         // _levelReached.text = level.ToString();
-        _score.text = score.ToString();
+        _score.text = score.ToString(); //Mathf.RoundToInt(score / 100).ToString();
     }
 
     private void SetRank(int rank)
