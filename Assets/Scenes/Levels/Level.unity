@@ -419,6 +419,7 @@ MonoBehaviour:
   menuGameObject: {fileID: 1257028410}
   gameOverGameObject: {fileID: 1607382865}
   suiGameObject: {fileID: 1525805180}
+  instantiater: {fileID: 0}
   score: 0
   level: 1
   remainingForNextLevel: 25
@@ -2239,8 +2240,8 @@ MonoBehaviour:
   confirmWalletButton: {fileID: 0}
   logoutButton: {fileID: 0}
   menuGameObject: {fileID: 1257028410}
-  backendURL: https://ball-game-hlvu.onrender.com
-  gameURL: https://app.suihotdog.com/
+  backendURL: https://two048-balls-webgl-build.onrender.com
+  gameURL: https://app.bratonsui.com/
   debugMode: 1
   autoCreateUIIfMissing: 0
   googleSheetsWebhookURL: 

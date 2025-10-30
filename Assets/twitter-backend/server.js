@@ -6,9 +6,9 @@ const crypto = require("crypto");
 const app = express();
 
 // TODO: Replace these values with your NEW Twitter app credentials
-const CLIENT_ID = "S1hDZFFqLUZrT0ZRZkNwcHBBNkY6MTpjaQ";
-const CLIENT_SECRET = "_OqiosDXWBkBxy4H_DJ8PKgjMmRdfML5lh9trg7LLOaQjtyAVh";
-const REDIRECT_URI = "https://ball-game-hlvu.onrender.com/auth/twitter/callback";
+const CLIENT_ID = "RzFjeUtVeHZFSjc4VnlBYkYzcnc6MTpjaQ";
+const CLIENT_SECRET = "aptoxPyuO8MTWcCi_41zGoVk6uMiwATWu5vEBFvqxlk8bYBbh4";
+const REDIRECT_URI = "https://two048-balls-webgl-build.onrender.com/auth/twitter/callback";
 
 // Validate credentials
 if (!CLIENT_ID || !CLIENT_SECRET || CLIENT_ID.includes("TODO") || CLIENT_SECRET.includes("TODO")) {
