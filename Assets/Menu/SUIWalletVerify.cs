@@ -47,6 +47,7 @@ public class SUIWalletVerify : MonoBehaviour
             string displayText = FormatAddressForDisplay(playerSuiWalletAddr);
             targetText.text = prefix + displayText + suffix;
             GameManager.Instance.CompleteSUILogin();
+            PlayfabManager.Instance.PlayerSuiWalletAddr = playerSuiWalletAddr;
         }
         else
         {

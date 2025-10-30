@@ -104,7 +104,7 @@ public class Login : MonoBehaviour
         }
         
         // Resume game
-        Time.timeScale = 1f;
+        // Time.timeScale = 1f;
         GameManager.IsLoggedIn = true;
     }
 

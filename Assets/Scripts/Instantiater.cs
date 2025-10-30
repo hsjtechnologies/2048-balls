@@ -21,7 +21,8 @@ public class Instantiater : MonoBehaviour
     {
         // Subscribe to login events
         TwitterOAuth.OnLoginCompleted += OnUserLoggedIn;
-        
+        GM = GameManager.Instance;
+        GM.instantiater = this;
         // Only start spawning once player is logged in
         if (GameManager.IsLoggedIn)
         {
@@ -35,7 +36,7 @@ public class Instantiater : MonoBehaviour
         StartSpawning();
     }
 
-    private void StartSpawning()
+    public void StartSpawning()
     {
         if (!hasStartedSpawning)
         {

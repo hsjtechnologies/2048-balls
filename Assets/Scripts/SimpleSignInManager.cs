@@ -280,9 +280,9 @@ public class SimpleSignInManager : MonoBehaviour
         }
         
         // Set game state
-        GameManager.IsLoggedIn = true;
-        Time.timeScale = 1f;
-        isLoggedIn = true;
+        // GameManager.IsLoggedIn = true;
+        // Time.timeScale = 1f;
+        // isLoggedIn = true;
         
         LogDebug($"GameManager.IsLoggedIn is now: {GameManager.IsLoggedIn}");
         LogDebug($"Time.timeScale is now: {Time.timeScale}");
@@ -331,9 +331,9 @@ public class SimpleSignInManager : MonoBehaviour
         PlayerPrefs.Save();
         
         // Reset game state
-        GameManager.IsLoggedIn = false;
-        Time.timeScale = 0f;
-        isLoggedIn = false;
+        // GameManager.IsLoggedIn = false;
+        // Time.timeScale = 0f;
+        // isLoggedIn = false;
         
         // Reset variables
         twitterUsername = "";

@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System.Collections;
 using PlayfabRequests;
 using Core.DataModels;
+using WebGLCopyAndPaste;
 
 public class SUITextUpdater : MonoBehaviour
 {
@@ -251,7 +252,7 @@ public class SUITextUpdater : MonoBehaviour
             targetText.color = normalColor;
         }
     }
-    
+
     private void OnDestroy()
     {
         // Clean up listeners
@@ -259,10 +260,24 @@ public class SUITextUpdater : MonoBehaviour
         {
             updateButton.onClick.RemoveListener(OnButtonClick);
         }
-        
+
         if (inputField != null)
         {
             inputField.onValueChanged.RemoveListener(OnInputChanged);
+        }
+    }
+
+    public void CopyWalletAddressToClipboard()
+    {
+        string walletAddress = PlayfabManager.Instance.PlayerSuiWalletAddr;
+        if (!string.IsNullOrEmpty(walletAddress))
+        {
+            WebGLCopyAndPasteAPI.CopyToClipboard(walletAddress);
+            Debug.Log($"Wallet address copied to clipboard: {walletAddress}");
+        }
+        else
+        {
+            Debug.LogWarning("Cannot copy: Wallet address is empty");
         }
     }
 }

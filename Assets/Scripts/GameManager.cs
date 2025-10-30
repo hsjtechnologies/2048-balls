@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     public GameObject menuGameObject; // Reference to the Menu GameObject to disable after login
     public GameObject gameOverGameObject; // Reference to the Game Over GameObject to enable when game ends
     public GameObject suiGameObject; // Reference to the SUI GameObject to enable after login
+    public Instantiater instantiater;
     private bool gameOver = false;
     [SerializeField]
     private float score = 0;
@@ -77,7 +78,7 @@ public class GameManager : MonoBehaviour
 
         if (!string.IsNullOrEmpty(savedUsername) || hasOAuthCallback)
         {
-            IsLoggedIn = true;
+            // IsLoggedIn = true;
             Time.timeScale = 1f;
             string username = hasOAuthCallback ? "OAuth callback detected" : savedUsername;
             Debug.Log($"Game started - user was already logged in: {username}");
@@ -269,7 +270,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log($"User logged in: @{twitterUsername} with wallet: {walletAddress}");
         // Ensure game state is properly set
-        IsLoggedIn = true;
+        // IsLoggedIn = true;
         Time.timeScale = 1f;
         
         Debug.Log($"GameManager: Login confirmed - Time.timeScale set to {Time.timeScale}");
@@ -385,7 +386,7 @@ public class GameManager : MonoBehaviour
         // Ensure game state is set
         IsLoggedIn = true;
         Time.timeScale = 1f;
-        
+        instantiater.StartSpawning();
         Debug.Log($"GameManager: SUI Login confirmed - Time.timeScale set to {Time.timeScale}");
         Debug.Log($"GameManager: IsLoggedIn is now {IsLoggedIn}");
         

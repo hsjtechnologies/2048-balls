@@ -500,9 +500,9 @@ public class TwitterOAuth : MonoBehaviour
         }
         
         // Set game state
-        GameManager.IsLoggedIn = true;
-        Time.timeScale = 1f;
-        isLoggedIn = true;
+        // GameManager.IsLoggedIn = true;
+        // Time.timeScale = 1f;
+        // isLoggedIn = true;
         
         LogDebug($"GameManager.IsLoggedIn is now: {GameManager.IsLoggedIn}");
         LogDebug($"Time.timeScale is now: {Time.timeScale}");
