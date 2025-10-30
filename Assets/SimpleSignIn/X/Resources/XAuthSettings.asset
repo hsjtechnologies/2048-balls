@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: XAuthSettings
   m_EditorClassIdentifier: 
   Id: Default
-  ClientId: VzZiZDdqbVo5ZDByMzBDdjhKVmw6MTpjaQ
-  ClientSecret: Yj3nLGVOf7tsc_-T2Aw74HnGf-BZOgpcA-6UBYPj1GF2q1guit
+  ClientId: RzFjeUtVeHZFSjc4VnlBYkYzcnc6MTpjaQ
+  ClientSecret: aptoxPyuO8MTWcCi_41zGoVk6uMiwATWu5vEBFvqxlk8bYBbh4
   CustomUriScheme: ball2048.oauth
   AccessScopes:
   - tweet.read

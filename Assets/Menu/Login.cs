@@ -8,7 +8,7 @@ public class Login : MonoBehaviour
     public GameObject walletPanel;  
     
     // 🌐 Backend URL (change this based on where your backend is)
-    private string backendURL = "https://ball-game-hlvu.onrender.com";
+    private string backendURL = "https://two048-balls-webgl-build.onrender.com";
     
     private string twitterUsername = "";
     private string accessToken = "";
