@@ -96,10 +96,10 @@ public class TwitterOAuthTester : MonoBehaviour
         Debug.Log("1. Environment Variables:");
         Debug.Log("   - TWITTER_API_KEY (your Twitter app API key)");
         Debug.Log("   - TWITTER_API_SECRET (your Twitter app API secret)");
-        Debug.Log("   - TWITTER_CALLBACK_URL=https://ball-game-hlvu.onrender.com/auth/twitter/callback");
+        Debug.Log("   - TWITTER_CALLBACK_URL=https://two048-balls-webgl-build-1.onrender.com/auth/twitter/callback");
         Debug.Log("");
         Debug.Log("2. Twitter Developer Portal:");
-        Debug.Log("   - Callback URL: https://ball-game-hlvu.onrender.com/auth/twitter/callback");
+        Debug.Log("   - Callback URL: https://two048-balls-webgl-build-1.onrender.com/auth/twitter/callback");
         Debug.Log("   - App permissions: Read (minimum)");
         Debug.Log("   - API Keys: Must match environment variables");
         Debug.Log("");

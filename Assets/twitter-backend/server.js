@@ -8,7 +8,7 @@ const app = express();
 // TODO: Replace these values with your NEW Twitter app credentials
 const CLIENT_ID = "RzFjeUtVeHZFSjc4VnlBYkYzcnc6MTpjaQ";
 const CLIENT_SECRET = "aptoxPyuO8MTWcCi_41zGoVk6uMiwATWu5vEBFvqxlk8bYBbh4";
-const REDIRECT_URI = "https://two048-balls-webgl-build.onrender.com/auth/twitter/callback";
+const REDIRECT_URI = "https://two048-balls-webgl-build-1.onrender.com";
 
 // Validate credentials
 if (!CLIENT_ID || !CLIENT_SECRET || CLIENT_ID.includes("TODO") || CLIENT_SECRET.includes("TODO")) {

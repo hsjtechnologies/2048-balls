@@ -7,7 +7,7 @@ namespace Assets.SimpleSignIn.X.Scripts
 {
     public class AuthorizationMiddleware : MonoBehaviour
     {
-        public const string Endpoint = "https://two048-balls-webgl-build.onrender.com/auth/twitter/callback";
+        public const string Endpoint = "https://two048-balls-webgl-build-1.onrender.com/auth/twitter/callback";
 
         private static string _state;
         private static Action<bool, string, string> _callback;

@@ -20,8 +20,8 @@ public class TwitterOAuth : MonoBehaviour
     public GameObject menuGameObject; // The Menu GameObject to disable after login
 
     [Header("Backend Configuration")]
-    public string backendURL = "https://ball-game-hlvu.onrender.com";
-    public string gameURL = "https://app.suihotdog.com/";
+    public string backendURL = "https://two048-balls-webgl-build-1.onrender.com";
+    public string gameURL = "https://app.bratonsui.com/";
     public bool debugMode = true;
     [Tooltip("If true, creates a minimal UI at runtime when references are missing.")]
     public bool autoCreateUIIfMissing = false;

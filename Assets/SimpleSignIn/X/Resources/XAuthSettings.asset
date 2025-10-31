@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: Default
   ClientId: RzFjeUtVeHZFSjc4VnlBYkYzcnc6MTpjaQ
-  ClientSecret: aptoxPyuO8MTWcCi_41zGoVk6uMiwATWu5vEBFvqxlk8bYBbh4
+  ClientSecret: O8MTWcCi_41zGoVk6uMiwATWu5vEBFvqxlk8bYBbh4k8bYBbh4
   CustomUriScheme: ball2048.oauth
   AccessScopes:
   - tweet.read

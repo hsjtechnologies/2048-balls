@@ -2240,7 +2240,7 @@ MonoBehaviour:
   confirmWalletButton: {fileID: 0}
   logoutButton: {fileID: 0}
   menuGameObject: {fileID: 1257028410}
-  backendURL: https://two048-balls-webgl-build.onrender.com
+  backendURL: https://two048-balls-webgl-build-1.onrender.com
   gameURL: https://app.bratonsui.com/
   debugMode: 1
   autoCreateUIIfMissing: 0
