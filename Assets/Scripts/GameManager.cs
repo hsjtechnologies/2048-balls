@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
     public GameObject gameOverGameObject; // Reference to the Game Over GameObject to enable when game ends
     public GameObject suiGameObject; // Reference to the SUI GameObject to enable after login
     public Instantiater instantiater;
+    [SerializeField]
+    private bool forceStart = false;
     private bool gameOver = false;
     [SerializeField]
     private float score = 0;
@@ -65,8 +67,12 @@ public class GameManager : MonoBehaviour
         TwitterOAuth.OnLogoutCompleted += OnUserLoggedOut;
 
         // TEMPORARY: Bypass login for testing prefab spawning
-        // IsLoggedIn = true;
-        // Time.timeScale = 1f; 
+        if (forceStart)
+        {
+            IsLoggedIn = true;
+            Time.timeScale = 1f;
+        }
+
         // Debug.Log("BYPASSED LOGIN FOR TESTING - Prefabs should now spawn");
 
         // Check if user was already logged in from a previous session

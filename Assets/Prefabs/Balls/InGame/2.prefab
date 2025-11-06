@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3742989569985716281
 Transform:
   m_ObjectHideFlags: 0
@@ -130,7 +130,10 @@ GameObject:
   - component: {fileID: 3742989570798040672}
   - component: {fileID: 7387387485730417887}
   - component: {fileID: 4719403518512021104}
-  - component: {fileID: 1661652080}
+  - component: {fileID: 894227566}
+  - component: {fileID: -8730810317717445102}
+  - component: {fileID: 2434448906550420114}
+  - component: {fileID: 1256400120090305101}
   m_Layer: 0
   m_Name: 2
   m_TagString: Ball
@@ -147,7 +150,7 @@ Transform:
   m_GameObject: {fileID: 3742989570798040698}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.05}
-  m_LocalScale: {x: 0.07, y: 0.07, z: 0.07}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children:
   - {fileID: 3742989569985716281}
   m_Father: {fileID: 0}
@@ -160,7 +163,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3742989570798040698}
-  m_Mesh: {fileID: -466431540336701250, guid: ee24cbc7aa88af34b89a633022bd73d8, type: 3}
+  m_Mesh: {fileID: 4711208715938537054, guid: b8568afb5d08b5241a66a58d37282817, type: 3}
 --- !u!23 &3742989570798040679
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -180,7 +183,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 79dd287d08992fe45bba284be2df8d3c, type: 2}
+  - {fileID: 2100000, guid: 0d288b0065efe8f4c99b061c3ec0c896, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -216,8 +219,8 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 8
-  m_CollisionDetection: 1
+  m_Constraints: 56
+  m_CollisionDetection: 2
 --- !u!114 &3742989570798040672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,7 +228,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3742989570798040698}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1ad33eeec24236e4397ee6a45c7d2617, type: 3}
   m_Name: 
@@ -438,8 +441,8 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!64 &1661652080
-MeshCollider:
+--- !u!135 &894227566
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -448,7 +451,51 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -466431540336701250, guid: ee24cbc7aa88af34b89a633022bd73d8, type: 3}
+  serializedVersion: 2
+  m_Radius: 0.9
+  m_Center: {x: 0, y: 0.25, z: 0}
+--- !u!95 &-8730810317717445102
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3742989570798040698}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 43286b7f78446794095319d89437e551, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &2434448906550420114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3742989570798040698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 876853ad77ec9aa4cb67201775f2b66b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  setObjType: 0
+--- !u!135 &1256400120090305101
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3742989570798040698}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.9
+  m_Center: {x: 0, y: 0.25, z: 0}
