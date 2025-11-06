@@ -420,7 +420,7 @@ MonoBehaviour:
   gameOverGameObject: {fileID: 1607382865}
   suiGameObject: {fileID: 1525805180}
   instantiater: {fileID: 1094805616}
-  forceStart: 1
+  forceStart: 0
   score: 0
   level: 1
   remainingForNextLevel: 25
@@ -599,7 +599,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3454646089990920113, guid: 167fad874a64f4644ae9a650a2a2131e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3454646089990920117, guid: 167fad874a64f4644ae9a650a2a2131e, type: 3}
       propertyPath: m_Pivot.x
@@ -3070,7 +3070,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Back
+  m_Text: Prev
 --- !u!222 &877659822
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3622,7 +3622,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1094805615}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.18087606, y: 1.052, z: -1.1696907}
+  m_LocalPosition: {x: -0.18087606, y: 1.178, z: -1.1696907}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1430194176}
@@ -4175,7 +4175,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 150}
+  m_AnchoredPosition: {x: 0, y: 165}
   m_SizeDelta: {x: 118.5518, y: 26.999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1238251690
@@ -5238,7 +5238,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1500372613}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.32500315, y: 1.0565181, z: -1.2135953}
+  m_LocalPosition: {x: -0.32500315, y: 0.975, z: -1.2135953}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1579393362}
@@ -6562,6 +6562,7 @@ GameObject:
   - component: {fileID: 1811963141}
   - component: {fileID: 1811963140}
   - component: {fileID: 1811963143}
+  - component: {fileID: 1811963144}
   m_Layer: 6
   m_Name: LeaderboardButton
   m_TagString: Untagged
@@ -6586,7 +6587,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 84.9, y: -54.9}
+  m_AnchoredPosition: {x: 84.9, y: -35}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1811963140
@@ -6645,6 +6646,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1811963144}
+        m_TargetAssemblyTypeName: LeaderboardButton, Assembly-CSharp
+        m_MethodName: OnToggle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1811963141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6695,6 +6708,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8313d0c01331dae4199baa66b98aa790, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Callback:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1811963144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1811963138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f6137f9800a63f45b98203456fa5cf8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Leaderboard: {fileID: 555379124}
+  ButtonText: {fileID: 845049802}
+  btnTextDefault: Leaderboard
+  btnTextOnOpen: Close
 --- !u!1 &1835751086
 GameObject:
   m_ObjectHideFlags: 0
@@ -7073,7 +7105,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -70, y: -55}
+  m_AnchoredPosition: {x: -70, y: -35}
   m_SizeDelta: {x: 130, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1991127124
